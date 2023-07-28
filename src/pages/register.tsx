@@ -40,7 +40,7 @@ export default function Register() {
               placeholder="Password"
             />
           </div>
-          <Button text="Start coding now" />
+          <Button>Start coding now</Button>
         </form>
       </div>
       <div>

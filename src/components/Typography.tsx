@@ -9,6 +9,7 @@ type Props = {
     | "subtitle1"
     | "subtitle2"
     | "subtitle3"
+    | "subtitle4"
     | "body1"
     | "body2"
     | "body3"
@@ -31,7 +32,8 @@ export default function Typography({
 
     subtitle1: `text-lg font-light text-${color}`, //font-size: 18px; font-weight: 300
     subtitle2: `text-base font-normal text-${color}`, //font-size: 16px; font-weight: 400
-    subtitle3: `text-[13px] font-medium text-${color}`, //font-size: 13px; font-weight: 500
+    subtitle3: `text-sm font-light text-${color}`, //font-size: 14px; font-weight: 300
+    subtitle4: `text-[13px] font-medium text-${color}`, //font-size: 13px; font-weight: 500
 
     body1: `text-lg font-medium text-${color}`, //font-size: 18px; font-weight: 500
     body2: `text-sm font-normal text-${color}`, //font-size: 14px; font-weight: 400

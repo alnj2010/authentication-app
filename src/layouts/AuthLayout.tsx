@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactElement } from "react";
 import { Noto_Sans_Display } from "next/font/google";
+import Footer from "@/components/Footer";
 
 const notoSans = Noto_Sans_Display({
   subsets: ["latin"],
@@ -28,13 +29,7 @@ export default function AuthLayout({ children }: Props) {
           </div>
           <div className="">{children}</div>
         </div>
-        <div className="flex justify-between font-normal text-sm">
-          <div>
-            create by
-            <span className="font-semibold text-sm underline">alnj2010</span>
-          </div>
-          <div>devChallenge.io</div>
-        </div>
+        <Footer />
       </div>
     </main>
   );

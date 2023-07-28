@@ -32,7 +32,7 @@ export default function Home() {
               placeholder="Password"
             />
           </div>
-          <Button text="Login" />
+          <Button>Login</Button>
         </form>
       </div>
       <div>
