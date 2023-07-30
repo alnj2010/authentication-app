@@ -45,7 +45,9 @@ export default function Profile() {
               </Typography>
             </div>
             <div className="w-24">
-              <Button variant="secundary">Edit</Button>
+              <Button id="edit-button" variant="secundary">
+                Edit
+              </Button>
             </div>
           </div>
           <div>

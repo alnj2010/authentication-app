@@ -4,11 +4,17 @@ type Props = {
   id: string;
   iconSrc: string;
   iconAlt: string;
-  type: "text" | "password",
+  type: "text" | "password";
   placeholder: string;
 };
 
-export default function IconInput({ id, iconSrc, iconAlt, type, placeholder }: Props) {
+export default function IconInput({
+  id,
+  iconSrc,
+  iconAlt,
+  type,
+  placeholder,
+}: Props) {
   return (
     <>
       <label
@@ -21,6 +27,7 @@ export default function IconInput({ id, iconSrc, iconAlt, type, placeholder }: P
 
         <input
           id={id}
+          data-testid={id}
           type={type}
           placeholder={placeholder}
           className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base text-gray focus:outline-none focus:border-black focus:ring-2 focus:ring-black"

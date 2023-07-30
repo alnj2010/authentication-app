@@ -6,7 +6,7 @@ import { ReactElement } from "react";
 import AuthLayout from "@/layouts/AuthLayout";
 import Typography from "@/components/Typography";
 
-export default function Home() {
+export default function Login() {
   return (
     <>
       <div className="pb-7">
@@ -16,7 +16,7 @@ export default function Home() {
         <form action="">
           <div className="mb-3.5">
             <IconInput
-              id="user-email"
+              id="textfield-user-email"
               iconSrc="/mail.svg"
               iconAlt="mail icon"
               type="text"
@@ -25,14 +25,14 @@ export default function Home() {
           </div>
           <div className="mb-6">
             <IconInput
-              id="user-password"
+              id="textfield-user-password"
               iconSrc="/lock.svg"
               iconAlt="lock icon"
               type="password"
               placeholder="Password"
             />
           </div>
-          <Button>Login</Button>
+          <Button id="login-button">Login</Button>
         </form>
       </div>
       <div>
@@ -48,7 +48,11 @@ export default function Home() {
       <div className="text-center">
         <Typography variant="body2" color="gray">
           Don’t have an account yet?{" "}
-          <Link href="/register" className="text-blue">
+          <Link
+            href="/register"
+            className="text-blue"
+            data-testid="register-link"
+          >
             Register
           </Link>
         </Typography>
@@ -57,6 +61,6 @@ export default function Home() {
   );
 }
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Login.getLayout = function getLayout(page: ReactElement) {
   return <AuthLayout>{page}</AuthLayout>;
 };

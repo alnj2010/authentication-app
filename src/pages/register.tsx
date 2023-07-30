@@ -24,7 +24,7 @@ export default function Register() {
         <form action="">
           <div className="mb-3.5">
             <IconInput
-              id="user-email"
+              id="textfield-user-email"
               iconSrc="/mail.svg"
               iconAlt="mail icon"
               type="text"
@@ -33,14 +33,14 @@ export default function Register() {
           </div>
           <div className="mb-6">
             <IconInput
-              id="user-password"
+              id="textfield-user-password"
               iconSrc="/lock.svg"
               iconAlt="lock icon"
               type="password"
               placeholder="Password"
             />
           </div>
-          <Button>Start coding now</Button>
+          <Button id="register-button">Start coding now</Button>
         </form>
       </div>
       <div>
@@ -56,7 +56,7 @@ export default function Register() {
       <div className="text-center">
         <Typography variant="body2" color="gray">
           Already a member?{" "}
-          <Link href="/" className="text-blue">
+          <Link href="/" className="text-blue" data-testid="login-link">
             Login
           </Link>
         </Typography>
