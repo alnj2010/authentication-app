@@ -37,7 +37,7 @@ export default function Login() {
       </div>
       <div>
         <div className="text-center	pb-6">
-          <Typography variant="body2" color="gray">
+          <Typography variant="body2" color="text-gray">
             or continue with these social profile
           </Typography>
         </div>
@@ -46,7 +46,7 @@ export default function Login() {
         </div>
       </div>
       <div className="text-center">
-        <Typography variant="body2" color="gray">
+        <Typography variant="body2" color="text-gray">
           Don’t have an account yet?{" "}
           <Link
             href="/register"

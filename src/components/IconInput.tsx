@@ -30,7 +30,7 @@ export default function IconInput({
           data-testid={id}
           type={type}
           placeholder={placeholder}
-          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base text-gray focus:outline-none focus:border-black focus:ring-2 focus:ring-black"
+          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base text-gray focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light"
         />
       </label>
     </>

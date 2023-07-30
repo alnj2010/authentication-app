@@ -45,7 +45,7 @@ export default function Register() {
       </div>
       <div>
         <div className="text-center	pb-6">
-          <Typography variant="body2" color="gray">
+          <Typography variant="body2" color="text-gray">
             or continue with these social profile
           </Typography>
         </div>
@@ -54,7 +54,7 @@ export default function Register() {
         </div>
       </div>
       <div className="text-center">
-        <Typography variant="body2" color="gray">
+        <Typography variant="body2" color="text-gray">
           Already a member?{" "}
           <Link href="/" className="text-blue" data-testid="login-link">
             Login
