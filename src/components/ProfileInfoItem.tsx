@@ -19,7 +19,6 @@ export default function ProfileInfoItem({ title, children }: Props) {
       </Typography>
       <div
         className="min-w-[120px] flex justify-end w-full sm:justify-start"
-        data-testid={`${title.toLowerCase()}-label`}
       >
         {children}
       </div>

@@ -3,7 +3,7 @@ import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
 import SocialAuthContainer from "@/containers/SocialAuthContainer";
 import { ReactElement } from "react";
-import AuthLayout from "@/layouts/AuthLayout";
+import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
 
 export default function Login() {

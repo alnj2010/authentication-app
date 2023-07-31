@@ -7,30 +7,16 @@ import Typography from "@/components/Typography";
 import { Noto_Sans_Display } from "next/font/google";
 import Footer from "@/components/Footer";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
+import { User } from "@/domain/types";
+import { userDummy } from "../../test/dummies";
 
 const notoSans = Noto_Sans_Display({
   subsets: ["latin"],
   variable: "--font-noto-sans",
 });
 
-type User = {
-  photo: string;
-  bio: string;
-  name: string;
-  phone: string;
-  email: string;
-  password: string;
-};
-
 export async function getServerSideProps() {
-  const user: User = {
-    photo: "/vercel.svg",
-    bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti hic voluptates ratione dolores, totam, commodi est quo voluptatem minus porro eaque asperiores. Doloremque unde neque voluptatibus natus non quasi provident.",
-    name: "Xanthe Neal",
-    phone: "908249274292",
-    email: "xanthe.neal@gmail.com",
-    password: "******",
-  };
+  const user: User = userDummy;
   return {
     props: { user },
   };
@@ -42,7 +28,6 @@ type Props = {
 
 export default function Profile({ user }: Props) {
   const userKeys = Object.keys(user);
-  console.log(userKeys);
   return (
     <main className={`py-4 px-5 h-screen ${notoSans.variable} font-sans`}>
       <nav className="flex justify-between mb-9">
@@ -96,12 +81,19 @@ export default function Profile({ user }: Props) {
             {userKeys.map((title) => (
               <ProfileInfoItem key={title} title={title}>
                 {title === "photo" ? (
-                  <div className="w-[72px] h-[72px] bg-black-light rounded-md"></div>
+                  <Image
+                    src={user.photo}
+                    alt="profile photo"
+                    width={72}
+                    height={72}
+                    data-testid={`${title.toLowerCase()}-label`}
+                  />
                 ) : (
                   <Typography
                     variant="button"
                     color="text-black-light"
                     className="truncate sm:text-lg sm:font-medium"
+                    dataTestid={`${title.toLowerCase()}-label`}
                   >
                     {user[title as keyof User]}
                   </Typography>

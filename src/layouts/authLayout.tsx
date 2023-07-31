@@ -21,13 +21,15 @@ export default function AuthLayout({ children }: Props) {
           <div className="pb-7">
             <Image
               src="/devchallenges.svg"
-              alt="Vercel Logo"
+              alt="devChallenge Logo"
               className=""
               width={130}
               height={18}
             />
           </div>
-          <div className="">{children}</div>
+          <div className="" data-testid="auth-children">
+            {children}
+          </div>
         </div>
         <Footer />
       </div>

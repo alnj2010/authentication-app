@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 type Props = {
   children: ReactNode;
   className?: string;
+  dataTestid?: string;
   variant:
     | "title1"
     | "title2"
@@ -33,6 +34,7 @@ export default function Typography({
   variant,
   className = "",
   color = "text-black-light",
+  dataTestid,
 }: Props) {
   const variants = {
     title1: `text-4xl font-normal ${color}`, //font-size: 36px; font-weight: 400
@@ -54,5 +56,12 @@ export default function Typography({
     dropdown1: `text-xs font-semibold ${color}`, //font-size: 12px; font-weight: 700
     dropdown2: `text-xs font-bold ${color}`, //font-size: 12px; font-weight: 500
   };
-  return <div className={`${variants[variant]} ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`${variants[variant]} ${className}`}
+      data-testid={dataTestid}
+    >
+      {children}
+    </div>
+  );
 }
