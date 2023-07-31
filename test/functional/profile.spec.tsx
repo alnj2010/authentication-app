@@ -3,12 +3,24 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Profile from "@/pages/profile";
 import { userDummy } from "../dummies";
+import NavbarLayout from "@/layouts/navbarLayout";
+import WelcomeProfilePage from "@/components/WelcomeProfilePage";
+import ContentLayout from "@/layouts/contentLayout";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
 describe("Profile page", () => {
   beforeEach(() => {
-    render(<Profile user={userDummy} />);
+    render(
+      <NavbarLayout>
+        <>
+          <WelcomeProfilePage />
+          <ContentLayout>
+            <Profile user={userDummy} />
+          </ContentLayout>
+        </>
+      </NavbarLayout>
+    );
   });
 
   it("Should render properly", () => {

@@ -1,6 +1,6 @@
 import Typography from "./Typography";
 
-export default function PersonalInfo() {
+export default function WelcomeProfilePage() {
   return (
     <section className="text-center pb-10">
       <div className="pb-2">

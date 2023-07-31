@@ -4,35 +4,27 @@ import Image from "next/image";
 
 import { ReactElement } from "react";
 import Typography from "@/components/Typography";
-import { Noto_Sans_Display } from "next/font/google";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
 import { User } from "@/domain/types";
 import { userDummy } from "../../../test/dummies";
 import NavbarLayout from "@/layouts/navbarLayout";
 import ContentLayout from "@/layouts/contentLayout";
-import PersonalInfo from "@/components/PersonalInfo";
-
-const notoSans = Noto_Sans_Display({
-  subsets: ["latin"],
-  variable: "--font-noto-sans",
-});
-
-export async function getServerSideProps() {
-  const user: User = userDummy;
-  return {
-    props: { user },
-  };
-}
+import SectionInfo from "@/components/SectionInfo";
+import WelcomeProfilePage from "@/components/WelcomeProfilePage";
 
 type Props = {
   user: User;
 };
 
-export default function Profile({ user }: Props) {
+export default function Profile({ user = userDummy }: Props) {
   const userKeys = Object.keys(user);
   return (
     <>
       <div className="flex justify-between pb-12 sm:pb-7 sm:px-12 sm:border-b sm:border-b-[#E0E0E0]">
+        <SectionInfo
+          title="Profile"
+          subtitle="Some info may be visible to other people"
+        />
         <div>
           <div className="pb-1">
             <Typography variant="title2" color="text-black">
@@ -87,7 +79,7 @@ Profile.getLayout = function getLayout(page: ReactElement) {
   return (
     <NavbarLayout>
       <>
-        <PersonalInfo />
+        <WelcomeProfilePage />
         <ContentLayout>{page}</ContentLayout>
       </>
     </NavbarLayout>
