@@ -25,16 +25,6 @@ export default function Profile({ user = userDummy }: Props) {
           title="Profile"
           subtitle="Some info may be visible to other people"
         />
-        <div>
-          <div className="pb-1">
-            <Typography variant="title2" color="text-black">
-              Profile
-            </Typography>
-          </div>
-          <Typography variant="subtitle4" color="text-gray">
-            Some info may be visible to other people
-          </Typography>
-        </div>
         <div className="w-24 flex items-center">
           <Button id="edit-button" variant="secundary">
             <Link
