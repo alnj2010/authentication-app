@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 type Props = {
   id: string;
-  children: string;
+  children: ReactNode;
   variant?: "primary" | "secundary";
 };
 

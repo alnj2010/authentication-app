@@ -12,6 +12,7 @@
     "test:cov": "jest --coverage"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.16",
     "@types/node": "20.4.4",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",

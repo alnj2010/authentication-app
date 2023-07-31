@@ -33,4 +33,9 @@ describe("Profile page", () => {
       userDummy.photo
     );
   });
+
+  it("When the edit button is clicked should go to edit profile page", () => {
+    const registerLink = screen.getByTestId("edit-link");
+    expect(registerLink.getAttribute("href")).toBe("/profile/edit");
+  });
 });

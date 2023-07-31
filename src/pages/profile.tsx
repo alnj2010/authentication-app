@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
 import { User } from "@/domain/types";
 import { userDummy } from "../../test/dummies";
+import Dropdown from "@/components/Dropdown";
 
 const notoSans = Noto_Sans_Display({
   subsets: ["latin"],
@@ -38,7 +39,9 @@ export default function Profile({ user }: Props) {
           width={130}
           height={18}
         />
-        <div className="w-[32px] h-[32px] bg-black-light  rounded-md"></div>
+        <div>
+          <Dropdown />
+        </div>
       </nav>
       <section className="text-center pb-10">
         <div className="pb-2">
@@ -73,7 +76,13 @@ export default function Profile({ user }: Props) {
             </div>
             <div className="w-24 flex items-center">
               <Button id="edit-button" variant="secundary">
-                Edit
+                <Link
+                  data-testid="edit-link"
+                  href="/profile/edit"
+                  className="flex justify-center items-center h-full"
+                >
+                  Edit
+                </Link>
               </Button>
             </div>
           </div>
