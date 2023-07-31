@@ -1,24 +1,24 @@
 import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
-import Login from "../../src/pages";
+import Register from "@/pages/register";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
-describe("Login page", () => {
+describe("Register page", () => {
   beforeEach(() => {
-    render(<Login />);
+    render(<Register />);
   });
 
   it("Should render properly", () => {
     screen.getByTestId("textfield-user-email");
     screen.getByTestId("textfield-user-password");
-    screen.getByTestId("login-button");
-    screen.getByTestId("register-link");
+    screen.getByTestId("register-button");
+    screen.getByTestId("login-link");
   });
 
   it("When register Link is clicked should go to register page", async () => {
-    const registerLink = screen.getByTestId("register-link");
-    expect(registerLink.getAttribute("href")).toBe("/register");
+    const registerLink = screen.getByTestId("login-link");
+    expect(registerLink.getAttribute("href")).toBe("/");
   });
 });

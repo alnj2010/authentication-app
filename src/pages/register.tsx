@@ -6,11 +6,19 @@ import { ReactElement } from "react";
 import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
 
-export default function Login() {
+export default function Register() {
   return (
     <>
+      <div className="pb-4">
+        <Typography variant="title3">
+          Join thousands of learners from around the world
+        </Typography>
+      </div>
       <div className="pb-7">
-        <Typography variant="title3">Login</Typography>
+        <Typography variant="subtitle2">
+          Master web development by making real-life projects. There are
+          multiple paths for you to choose
+        </Typography>
       </div>
       <div className="pb-8">
         <form action="">
@@ -32,7 +40,7 @@ export default function Login() {
               placeholder="Password"
             />
           </div>
-          <Button id="login-button">Login</Button>
+          <Button id="register-button">Start coding now</Button>
         </form>
       </div>
       <div>
@@ -47,13 +55,9 @@ export default function Login() {
       </div>
       <div className="text-center">
         <Typography variant="body2" color="text-gray">
-          Don’t have an account yet?{" "}
-          <Link
-            href="/register"
-            className="text-blue"
-            data-testid="register-link"
-          >
-            Register
+          Already a member?{" "}
+          <Link href="/" className="text-blue" data-testid="login-link">
+            Login
           </Link>
         </Typography>
       </div>
@@ -61,6 +65,6 @@ export default function Login() {
   );
 }
 
-Login.getLayout = function getLayout(page: ReactElement) {
+Register.getLayout = function getLayout(page: ReactElement) {
   return <AuthLayout>{page}</AuthLayout>;
 };
