@@ -10,7 +10,9 @@ export default function Login() {
   return (
     <>
       <div className="pb-7">
-        <Typography variant="title3">Login</Typography>
+        <Typography variant="title3" className="dark:text-gray-secondary">
+          Login
+        </Typography>
       </div>
       <div className="pb-8">
         <form action="">

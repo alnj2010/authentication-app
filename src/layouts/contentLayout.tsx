@@ -9,7 +9,7 @@ type Props = {
 export default function ContentLayout({ children }: Props) {
   return (
     <section className="max-w-4xl m-auto">
-      <div className="mb-4 sm:border-[#E0E0E0] sm:border-solid sm:border sm:rounded-xl sm:pt-7">
+      <div className="mb-4 sm:border-gray-secondary sm:border-solid sm:border sm:rounded-xl sm:pt-7">
         {children}
       </div>
       <Footer />

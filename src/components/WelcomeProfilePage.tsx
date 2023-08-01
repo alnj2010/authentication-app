@@ -6,7 +6,7 @@ export default function WelcomeProfilePage() {
       <div className="pb-2">
         <Typography
           variant="title2"
-          className="sm:text-4xl sm:font-normal"
+          className="sm:text-4xl sm:font-normal dark:text-gray-secondary"
           color="text-black"
         >
           Personal info
@@ -14,7 +14,7 @@ export default function WelcomeProfilePage() {
       </div>
       <Typography
         variant="subtitle3"
-        className="sm:text-lg sm:font-light"
+        className="sm:text-lg sm:font-light dark:text-gray-secondary"
         color="text-black"
       >
         Basic info, like your name and photo

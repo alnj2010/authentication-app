@@ -57,7 +57,7 @@ export default function Dropdown({ user }: Props) {
           </div>
           <Typography
             variant="dropdown1"
-            className="mr-3"
+            className="mr-3 dark:text-gray-secondary"
             dataTestid="menu-user-name"
           >
             {user.name}
@@ -80,9 +80,9 @@ export default function Dropdown({ user }: Props) {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items
-           data-testid="menu-items"
+            data-testid="menu-items"
             as="div"
-            className="w-full drop-shadow-md bg-[#FFFFFF] border-[#E0E0E0] border-solid border rounded-xl px-3 py-4"
+            className="w-full drop-shadow-md bg-[#FFFFFF] border-gray-secondary border-solid border rounded-xl px-3 py-4"
           >
             <MenuItem
               title="My Profile"
@@ -90,7 +90,7 @@ export default function Dropdown({ user }: Props) {
               icon="/user-circle.svg"
               data-testid="item-profile-link"
             />
-            <div className="h-[1px] bg-[#E0E0E0] my-2"></div>
+            <div className="h-[1px] bg-gray-secondary my-2"></div>
             <MenuItem
               title="Logout"
               redirect="/"

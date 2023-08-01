@@ -9,7 +9,7 @@ type Props = {
 
 export default function ProfileInfoItem({ title, children }: Props) {
   return (
-    <div className="h-24 border-b border-b-[#E0E0E0] flex justify-start items-center sm:border-b-0 sm:border-t sm:border-t-[#E0E0E0] sm:px-12">
+    <div className="h-24 border-b border-b-gray-secondary flex justify-start items-center sm:border-b-0 sm:border-t sm:border-t-gray-secondary sm:px-12">
       <Typography
         variant="subtitle4"
         color="text-gray-light"
