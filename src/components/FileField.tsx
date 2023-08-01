@@ -15,7 +15,8 @@ export default function FileField({ id, title, value }: Props) {
         className="flex justify-start items-center w-52 cursor-pointer"
         htmlFor={id}
       >
-        <div className="w-[72px] h-[72px] bg-black-light rounded-md flex justify-center items-center">
+        <div className="w-[72px] h-[72px] relative flex justify-center items-center">
+          <div className="absolute opacity-50 w-full h-full bg-camera bg-center bg-black-light bg-no-repeat bg-[length:24px] rounded-md flex justify-center items-center"></div>
           <Image
             width={72}
             height={72}
@@ -24,7 +25,12 @@ export default function FileField({ id, title, value }: Props) {
             data-testid={id}
           />
         </div>
-        <Typography variant="subtitle4" color="text-gray" className="pl-7 hidden sm:block">
+
+        <Typography
+          variant="subtitle4"
+          color="text-gray"
+          className="pl-7 hidden sm:block"
+        >
           {title.toUpperCase()}
         </Typography>
       </label>

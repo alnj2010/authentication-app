@@ -18,10 +18,10 @@ module.exports = {
       'white': '#ffffff',
       'black-light': '#333333',
       'black': '#000000',
-      'dark':'#252329',
+      'dark': '#252329',
       'gray-light': '#BDBDBD',
       'gray': '#828282',
-      'gray-secondary':'#E0E0E0',
+      'gray-secondary': '#E0E0E0',
       'blue-light': '#2D9CDB',
       'blue': '#2F80ED',
       'red': '#EB5757'
@@ -29,6 +29,9 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-noto-sans)']
+      },
+      backgroundImage: {
+        'camera': "url('/camera.svg')",
       }
     }
   },

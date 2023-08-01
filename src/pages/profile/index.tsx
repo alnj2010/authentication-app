@@ -41,13 +41,15 @@ export default function Profile({ user = userDummy }: Props) {
         {userKeys.map((title) => (
           <ProfileInfoItem key={title} title={title}>
             {title === "photo" ? (
-              <Image
-                src={user.photo}
-                alt="profile photo"
-                width={72}
-                height={72}
-                data-testid={`${title.toLowerCase()}-label`}
-              />
+              <div className="flex justify-center items-center w-[72px] h-[72px] bg-black-light rounded-md ">
+                <Image
+                  src={user.photo}
+                  alt="profile photo"
+                  width={72}
+                  height={72}
+                  data-testid={`${title.toLowerCase()}-label`}
+                />
+              </div>
             ) : (
               <Typography
                 variant="button"
