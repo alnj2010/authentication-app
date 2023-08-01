@@ -1,7 +1,7 @@
-import Image from "next/image";
 import type { ReactElement } from "react";
 import { Noto_Sans_Display } from "next/font/google";
 import Footer from "@/components/Footer";
+import DevChallengesPicture from "@/components/DevChallengesPicture";
 
 const notoSans = Noto_Sans_Display({
   subsets: ["latin"],
@@ -19,13 +19,7 @@ export default function AuthLayout({ children }: Props) {
       <div className="h-full flex flex-col justify-between sm:block sm:h-auto sm:w-[474px]">
         <div className="sm:h-auto sm:border-gray-light sm:border-solid sm:border sm:rounded-3xl sm:px-14 sm:pt-12 sm:pb-11">
           <div className="pb-7">
-            <Image
-              src="/devchallenges.svg"
-              alt="devChallenge Logo"
-              className=""
-              width={130}
-              height={18}
-            />
+            <DevChallengesPicture />
           </div>
           <div className="" data-testid="auth-children">
             {children}
