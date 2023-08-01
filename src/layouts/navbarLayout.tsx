@@ -17,7 +17,7 @@ type Props = {
 export default function NavbarLayout({ children, user = userDummy }: Props) {
   return (
     <main
-      className={`py-4 px-5 h-screen ${notoSans.variable} font-sans sm:px-20`}
+      className={`py-4 px-5 h-screen ${notoSans.variable} font-sans sm:px-20 dark:bg-dark`}
     >
       <nav className="flex justify-between mb-9 ">
         <Image

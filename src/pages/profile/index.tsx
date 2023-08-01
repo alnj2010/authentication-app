@@ -20,7 +20,7 @@ export default function Profile({ user = userDummy }: Props) {
   const userKeys = Object.keys(user);
   return (
     <>
-      <div className="flex justify-between pb-12 sm:pb-7 sm:px-12 sm:border-b sm:border-b-[#E0E0E0]">
+      <div className="flex justify-between pb-12 sm:pb-7 sm:px-12 sm:border-b sm:border-b-gray-secondary">
         <SectionInfo
           title="Profile"
           subtitle="Some info may be visible to other people"
@@ -52,7 +52,7 @@ export default function Profile({ user = userDummy }: Props) {
               <Typography
                 variant="button"
                 color="text-black-light"
-                className="truncate sm:text-lg sm:font-medium"
+                className="truncate sm:text-lg sm:font-medium dark:text-gray-secondary"
                 dataTestid={`${title.toLowerCase()}-label`}
               >
                 {user[title as keyof User]}

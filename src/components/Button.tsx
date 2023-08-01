@@ -10,7 +10,7 @@ export default function Button({ id, children, variant = "primary" }: Props) {
   const color =
     variant === "primary"
       ? "bg-blue text-white"
-      : "bg-white text-gray border-gray border-solid border";
+      : "bg-white text-gray border-gray border-solid border dark:bg-dark";
   return (
     <>
       <button
