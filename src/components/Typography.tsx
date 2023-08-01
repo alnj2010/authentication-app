@@ -26,7 +26,8 @@ type Props = {
     | "text-gray-light"
     | "text-gray"
     | "text-blue-light"
-    | "text-blue";
+    | "text-blue"
+    | "text-red";
 };
 
 export default function Typography({
@@ -53,8 +54,8 @@ export default function Typography({
     label: `text-lg font-normal ${color}`, //font-size: 18px; font-weight: 400
     button: `text-base font-medium ${color}`, // font-size: 16px; font-weight: 500
 
-    dropdown1: `text-xs font-semibold ${color}`, //font-size: 12px; font-weight: 700
-    dropdown2: `text-xs font-bold ${color}`, //font-size: 12px; font-weight: 500
+    dropdown1: `text-xs font-bold ${color}`, //font-size: 12px; font-weight: 700
+    dropdown2: `text-xs font-normal ${color}`, //font-size: 12px; font-weight: 500
   };
   return (
     <div

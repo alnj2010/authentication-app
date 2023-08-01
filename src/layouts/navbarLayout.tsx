@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { ReactElement } from "react";
 import { Noto_Sans_Display } from "next/font/google";
-import Footer from "@/components/Footer";
-import Typography from "@/components/Typography";
 import Dropdown from "@/components/Dropdown";
+import { User } from "@/domain/types";
+import { userDummy } from "../../test/dummies";
 
 const notoSans = Noto_Sans_Display({
   subsets: ["latin"],
@@ -12,11 +12,14 @@ const notoSans = Noto_Sans_Display({
 
 type Props = {
   children: ReactElement;
+  user: User;
 };
-export default function NavbarLayout({ children }: Props) {
+export default function NavbarLayout({ children, user = userDummy }: Props) {
   return (
-    <main className={`py-4 px-5 h-screen ${notoSans.variable} font-sans`}>
-      <nav className="flex justify-between mb-9">
+    <main
+      className={`py-4 px-5 h-screen ${notoSans.variable} font-sans sm:px-20`}
+    >
+      <nav className="flex justify-between mb-9 ">
         <Image
           src="/devchallenges.svg"
           alt="Vercel Logo"
@@ -25,10 +28,13 @@ export default function NavbarLayout({ children }: Props) {
           height={18}
         />
         <div>
-          <Dropdown />
+          <Dropdown user={user} />
         </div>
       </nav>
-      {children}
+      <div data-testid="nav-children">
+         {children}
+      </div>
+     
     </main>
   );
 }

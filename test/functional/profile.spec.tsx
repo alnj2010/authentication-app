@@ -6,20 +6,25 @@ import { userDummy } from "../dummies";
 import NavbarLayout from "@/layouts/navbarLayout";
 import WelcomeProfilePage from "@/components/WelcomeProfilePage";
 import ContentLayout from "@/layouts/contentLayout";
+import userEvent from "@testing-library/user-event";
+
+import mockRouter from "next-router-mock";
+import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
 describe("Profile page", () => {
   beforeEach(() => {
     render(
-      <NavbarLayout>
+      <NavbarLayout user={userDummy}>
         <>
           <WelcomeProfilePage />
           <ContentLayout>
             <Profile user={userDummy} />
           </ContentLayout>
         </>
-      </NavbarLayout>
+      </NavbarLayout>,
+      { wrapper: MemoryRouterProvider }
     );
   });
 
@@ -46,8 +51,10 @@ describe("Profile page", () => {
     );
   });
 
-  it("When the edit button is clicked should go to edit profile page", () => {
-    const registerLink = screen.getByTestId("edit-link");
-    expect(registerLink.getAttribute("href")).toBe("/profile/edit");
+  it("When the edit button is clicked should go to edit profile page", async () => {
+    const editProfileLink = screen.getByTestId("edit-link");
+
+    await userEvent.click(editProfileLink);
+    expect(mockRouter.asPath).toEqual("/profile/edit");
   });
 });
