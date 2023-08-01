@@ -24,7 +24,7 @@ export default function FileField({ id, title, value }: Props) {
             data-testid={id}
           />
         </div>
-        <Typography variant="subtitle4" color="text-gray" className="pl-7">
+        <Typography variant="subtitle4" color="text-gray" className="pl-7 hidden sm:block">
           {title.toUpperCase()}
         </Typography>
       </label>

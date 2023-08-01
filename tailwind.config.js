@@ -9,7 +9,7 @@ module.exports = {
   ],
   theme: {
     screens: {
-      'sm': '375px',
+      'sm': '520px',
       // => @media (min-width: 375px) { ... }
     },
     colors: {
@@ -21,13 +21,14 @@ module.exports = {
       'gray-light': '#BDBDBD',
       'gray': '#828282',
       'blue-light': '#2D9CDB',
-      'blue': '#2F80ED'
+      'blue': '#2F80ED',
+      'red': '#EB5757'
     },
-    extend:{
-      fontFamily:{
-        sans:['var(--font-noto-sans)']
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-noto-sans)']
       }
     }
   },
-  plugins: [],
+  plugins: [require('@headlessui/tailwindcss')],
 }

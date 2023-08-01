@@ -12,7 +12,7 @@ jest.mock("next/router", () => require("next-router-mock"));
 describe("Edit Profile page", () => {
   beforeEach(() => {
     render(
-      <NavbarLayout>
+      <NavbarLayout user={userDummy}>
         <>
           <BackLink />
           <ContentLayout>
