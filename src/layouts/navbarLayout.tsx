@@ -12,7 +12,7 @@ const notoSans = Noto_Sans_Display({
 
 type Props = {
   children: ReactElement;
-  user: User;
+  user?: User;
 };
 export default function NavbarLayout({ children, user = userDummy }: Props) {
   return (
@@ -31,10 +31,7 @@ export default function NavbarLayout({ children, user = userDummy }: Props) {
           <Dropdown user={user} />
         </div>
       </nav>
-      <div data-testid="nav-children">
-         {children}
-      </div>
-     
+      <div data-testid="nav-children">{children}</div>
     </main>
   );
 }
