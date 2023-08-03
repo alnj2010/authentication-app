@@ -8,6 +8,7 @@ import { LoginError } from "@/domain/errors/login-error";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
 import { useRouter } from "next/router";
+import { LOGIN_CLIEN_ERROR_INVALID_EMAIL, LOGIN_CLIEN_ERROR_PASSWORD_EMPTY } from "@/domain/constants";
 
 export default function AuthForm() {
   const router = useRouter();
@@ -28,11 +29,11 @@ export default function AuthForm() {
     const errors: Array<string> = [];
 
     if (!email || !emailRegex.test(email)) {
-      errors.push("Email is invalid");
+      errors.push(LOGIN_CLIEN_ERROR_INVALID_EMAIL);
     }
 
     if (!password) {
-      errors.push("Password is Empty");
+      errors.push(LOGIN_CLIEN_ERROR_PASSWORD_EMPTY);
     }
 
     if (errors.length === 0) {

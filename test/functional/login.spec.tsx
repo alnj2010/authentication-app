@@ -8,10 +8,27 @@ import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 import { userDummy } from "../dummies";
 import { Api } from "@/lib/api";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
+import {
+  LOGIN_CLIEN_ERROR_INVALID_EMAIL,
+  LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS,
+} from "@/domain/constants";
+import { AuthInfo } from "@/domain/types";
 
 jest.mock("@/lib/api");
 
 jest.mock("next/router", () => require("next-router-mock"));
+
+async function submitForm(user?: AuthInfo) {
+  const textFieldUserEmail = screen.getByTestId("textfield-user-email");
+  const textFieldUserPassword = screen.getByTestId("textfield-user-password");
+
+  if (user) {
+    await userEvent.type(textFieldUserEmail, user.email);
+    await userEvent.type(textFieldUserPassword, user.password);
+  }
+  const loginButton = screen.getByTestId("login-button");
+  await userEvent.click(loginButton);
+}
 
 describe("Login page", () => {
   beforeEach(() => {
@@ -48,68 +65,44 @@ describe("Login page", () => {
     expect(loginButton.hasAttribute("disabled")).toBeFalsy();
   });
 
-  it("When login button is clicked but there is a invalid email should show a messages error", async () => {
-    const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-    const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-    await userEvent.type(textFieldUserEmail, "invalid email");
-    await userEvent.type(textFieldUserPassword, userDummy.password);
-
-    const loginButton = screen.getByTestId("login-button");
-    await userEvent.click(loginButton);
-
-    const errorMessages = screen.getByTestId("error-messages");
-    expect(errorMessages.childElementCount).toBe(1);
-    expect(errorMessages.firstChild?.textContent).toContain("Email is invalid");
-  });
-
-  it("When login button is clicked with correct data but invalid credentials should show error messages", async () => {
-    jest.spyOn(Api, "post").mockResolvedValue({
-      ok: false,
-      data: { code: 401, error: "Invalid Credentials" },
-    });
-    const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-    const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-    await userEvent.type(textFieldUserEmail, userDummy.email);
-    await userEvent.type(textFieldUserPassword, userDummy.password);
-
-    const loginButton = screen.getByTestId("login-button");
-    await userEvent.click(loginButton);
+  it("Whe form is submited but there is a invalid email should show a messages error", async () => {
+    await submitForm({ password: userDummy.password, email: "invalidemail" });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      "Invalid Credentials"
+      LOGIN_CLIEN_ERROR_INVALID_EMAIL
     );
   });
 
-  it("When login button is clicked with valid data and credentials should not show error messages", async () => {
+  it("When form is submited with correct data but invalid credentials should show error messages", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue({
+      ok: false,
+      data: { code: 401, error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS },
+    });
+    await submitForm(userDummy);
+
+    const errorMessages = screen.getByTestId("error-messages");
+    expect(errorMessages.childElementCount).toBe(1);
+    expect(errorMessages.firstChild?.textContent).toContain(
+      LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS
+    );
+  });
+
+  it("When form is submited with valid data should not show error messages", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
     });
 
-    const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-    const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-    await userEvent.type(textFieldUserEmail, userDummy.email);
-    await userEvent.type(textFieldUserPassword, userDummy.password);
-    const loginButton = screen.getByTestId("login-button");
-    await userEvent.click(loginButton);
+    await submitForm(userDummy);
     expect(screen.queryByTestId("error-messages")).toBeNull();
   });
 
-  it("When login button is clicked with valid data but a error service occurred should go to error page", async () => {
+  it("When form is submited with valid data but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
 
-    const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-    const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-    await userEvent.type(textFieldUserEmail, userDummy.email);
-    await userEvent.type(textFieldUserPassword, userDummy.password);
-    const loginButton = screen.getByTestId("login-button");
-    await userEvent.click(loginButton);
+    await submitForm(userDummy);
 
     expect(mockRouter.asPath).toEqual("/500");
   });
