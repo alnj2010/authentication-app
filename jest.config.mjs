@@ -14,6 +14,9 @@ const config = {
   testEnvironment: 'jest-environment-jsdom',
   collectCoverage: true,
   collectCoverageFrom: ["<rootDir>/src/**"],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   coveragePathIgnorePatterns: [
     "<rootDir>/src/lib",
     "<rootDir>/src/pages/_app.tsx",

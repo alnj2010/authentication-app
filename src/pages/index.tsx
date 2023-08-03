@@ -2,9 +2,10 @@ import Link from "next/link";
 import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
 import SocialAuthContainer from "@/containers/SocialAuthContainer";
-import { ReactElement } from "react";
+import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
+import AuthForm from "@/components/AuthForm";
 
 export default function Login() {
   return (
@@ -15,27 +16,7 @@ export default function Login() {
         </Typography>
       </div>
       <div className="pb-8">
-        <form action="">
-          <div className="mb-3.5">
-            <IconInput
-              id="textfield-user-email"
-              iconSrc="/mail.svg"
-              iconAlt="mail icon"
-              type="text"
-              placeholder="Email"
-            />
-          </div>
-          <div className="mb-6">
-            <IconInput
-              id="textfield-user-password"
-              iconSrc="/lock.svg"
-              iconAlt="lock icon"
-              type="password"
-              placeholder="Password"
-            />
-          </div>
-          <Button id="login-button">Login</Button>
-        </form>
+        <AuthForm />
       </div>
       <div>
         <div className="text-center	pb-6">

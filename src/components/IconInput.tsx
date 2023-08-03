@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ChangeEventHandler, InputHTMLAttributes } from "react";
 
 type Props = {
   id: string;
@@ -6,6 +7,8 @@ type Props = {
   iconAlt: string;
   type: "text" | "password";
   placeholder: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  value: string;
 };
 
 export default function IconInput({
@@ -14,6 +17,8 @@ export default function IconInput({
   iconAlt,
   type,
   placeholder,
+  onChange,
+  value,
 }: Props) {
   return (
     <>
@@ -26,11 +31,14 @@ export default function IconInput({
         </div>
 
         <input
+          autoComplete="off"
+          onChange={onChange}
+          value={value}
           id={id}
           data-testid={id}
           type={type}
           placeholder={placeholder}
-          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base text-gray focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light"
+          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base placeholder-gray text-black-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light"
         />
       </label>
     </>

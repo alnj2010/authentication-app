@@ -24,6 +24,8 @@ export default function Register() {
         <form action="">
           <div className="mb-3.5">
             <IconInput
+              onChange={() => null}
+              value=""
               id="textfield-user-email"
               iconSrc="/mail.svg"
               iconAlt="mail icon"
@@ -33,6 +35,8 @@ export default function Register() {
           </div>
           <div className="mb-6">
             <IconInput
+              onChange={() => null}
+              value=""
               id="textfield-user-password"
               iconSrc="/lock.svg"
               iconAlt="lock icon"
