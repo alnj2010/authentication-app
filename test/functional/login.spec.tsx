@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
-import Login from "../../src/pages";
+import Login from "@/pages";
 import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
@@ -9,7 +9,7 @@ import { userDummy } from "../dummies";
 import { Api } from "@/lib/api";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
-jest.mock("../../src/lib/api");
+jest.mock("@/lib/api");
 
 jest.mock("next/router", () => require("next-router-mock"));
 
