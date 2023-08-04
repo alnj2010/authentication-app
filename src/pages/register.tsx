@@ -1,10 +1,10 @@
 import Link from "next/link";
-import IconInput from "@/components/IconInput";
-import Button from "@/components/Button";
 import SocialAuthContainer from "@/containers/SocialAuthContainer";
 import { ReactElement } from "react";
 import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
+import { register } from "@/services/register-service";
+import AuthForm from "@/components/AuthForm";
 
 export default function Register() {
   return (
@@ -21,31 +21,11 @@ export default function Register() {
         </Typography>
       </div>
       <div className="pb-8">
-        <form action="">
-          <div className="mb-3.5">
-            <IconInput
-              onChange={() => null}
-              value=""
-              id="textfield-user-email"
-              iconSrc="/mail.svg"
-              iconAlt="mail icon"
-              type="text"
-              placeholder="Email"
-            />
-          </div>
-          <div className="mb-6">
-            <IconInput
-              onChange={() => null}
-              value=""
-              id="textfield-user-password"
-              iconSrc="/lock.svg"
-              iconAlt="lock icon"
-              type="password"
-              placeholder="Password"
-            />
-          </div>
-          <Button id="register-button">Start coding now</Button>
-        </form>
+        <AuthForm
+          authService={register}
+          buttonTitle="Start coding now"
+          buttonId="register-button"
+        />
       </div>
       <div>
         <div className="text-center	pb-6">

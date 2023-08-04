@@ -2,18 +2,28 @@ import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
-import { regularLogin } from "@/services/login";
 import { AuthInfo } from "@/domain/types";
 import { LoginError } from "@/domain/errors/login-error";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
 import { useRouter } from "next/router";
 import {
-  LOGIN_CLIEN_ERROR_INVALID_EMAIL,
-  LOGIN_CLIEN_ERROR_PASSWORD_EMPTY,
+  AUTH_CLIEN_ERROR_INVALID_EMAIL,
+  AUTH_CLIEN_ERROR_PASSWORD_EMPTY,
+  AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT,
 } from "@/domain/constants";
 
-export default function AuthForm() {
+type Props = {
+  authService: (authInfo: AuthInfo) => void;
+  buttonTitle: string;
+  buttonId: string;
+};
+
+export default function AuthForm({
+  authService,
+  buttonTitle,
+  buttonId,
+}: Props) {
   const router = useRouter();
 
   const [email, setEmail] = useState<string>("");
@@ -32,11 +42,13 @@ export default function AuthForm() {
     const errors: Array<string> = [];
 
     if (!email || !emailRegex.test(email)) {
-      errors.push(LOGIN_CLIEN_ERROR_INVALID_EMAIL);
+      errors.push(AUTH_CLIEN_ERROR_INVALID_EMAIL);
     }
 
     if (!password) {
-      errors.push(LOGIN_CLIEN_ERROR_PASSWORD_EMPTY);
+      errors.push(AUTH_CLIEN_ERROR_PASSWORD_EMPTY);
+    } else if (password.length < 4) {
+      errors.push(AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT);
     }
 
     if (errors.length === 0) {
@@ -45,7 +57,7 @@ export default function AuthForm() {
           email,
           password,
         };
-        await regularLogin(authInfo);
+        await authService(authInfo);
         router.push("/profile");
       } catch (error) {
         if (error instanceof LoginError) errors.push(error.message);
@@ -82,8 +94,8 @@ export default function AuthForm() {
           placeholder="Password"
         />
       </div>
-      <Button id="login-button" disabled={isDisabled}>
-        Login
+      <Button data-testid={buttonId} id={buttonId} disabled={isDisabled}>
+        {buttonTitle}
       </Button>
       {areThereErrors && (
         <div data-testid="error-messages" className="pt-3">

@@ -9,26 +9,15 @@ import { userDummy } from "../dummies";
 import { Api } from "@/lib/api";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 import {
-  LOGIN_CLIEN_ERROR_INVALID_EMAIL,
+  AUTH_CLIEN_ERROR_INVALID_EMAIL,
+  AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT,
   LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS,
 } from "@/domain/constants";
-import { AuthInfo } from "@/domain/types";
+import { submitForm } from "../shared";
 
 jest.mock("@/lib/api");
 
 jest.mock("next/router", () => require("next-router-mock"));
-
-async function submitForm(user?: AuthInfo) {
-  const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-  const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-  if (user) {
-    await userEvent.type(textFieldUserEmail, user.email);
-    await userEvent.type(textFieldUserPassword, user.password);
-  }
-  const loginButton = screen.getByTestId("login-button");
-  await userEvent.click(loginButton);
-}
 
 describe("Login page", () => {
   beforeEach(() => {
@@ -58,7 +47,7 @@ describe("Login page", () => {
     expect(loginButton.hasAttribute("disabled")).toBeTruthy();
   });
 
-  it("When textfields are filled the login button should be active", async () => {
+  it("When login textfields are filled the login button should be active", async () => {
     const textFieldUserEmail = screen.getByTestId("textfield-user-email");
     const textFieldUserPassword = screen.getByTestId("textfield-user-password");
     await userEvent.type(textFieldUserEmail, userDummy.email);
@@ -69,22 +58,35 @@ describe("Login page", () => {
     expect(loginButton.hasAttribute("disabled")).toBeFalsy();
   });
 
-  it("Whe form is submited but there is a invalid email should show a messages error", async () => {
-    await submitForm({ password: userDummy.password, email: "invalidemail" });
+  it("When login form is submited but there is a invalid email should show a messages error", async () => {
+    await submitForm("login", {
+      password: userDummy.password,
+      email: "invalidemail",
+    });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      LOGIN_CLIEN_ERROR_INVALID_EMAIL
+      AUTH_CLIEN_ERROR_INVALID_EMAIL
     );
   });
 
-  it("When form is submited with correct data but invalid credentials should show error messages", async () => {
+  it("When login form is submited but there is a with less than (4) characters should show a messages error", async () => {
+    await submitForm("login", { password: "p", email: userDummy.email });
+
+    const errorMessages = screen.getByTestId("error-messages");
+    expect(errorMessages.childElementCount).toBe(1);
+    expect(errorMessages.firstChild?.textContent).toContain(
+      AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT
+    );
+  });
+
+  it("When login form is submited with correct data but invalid credentials should show error messages", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: false,
       data: { code: 401, error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS },
     });
-    await submitForm(userDummy);
+    await submitForm("login", userDummy);
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
@@ -93,32 +95,32 @@ describe("Login page", () => {
     );
   });
 
-  it("When form is submited with valid data should go to profile page", async () => {
+  it("When login form is submited with valid data should go to profile page", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
     });
 
-    await submitForm(userDummy);
+    await submitForm("login", userDummy);
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
-  it("When form is submited with valid data but a error service occurred should go to error page", async () => {
+  it("When login form is submited with valid data but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
 
-    await submitForm(userDummy);
+    await submitForm("login", userDummy);
 
     expect(mockRouter.asPath).toEqual("/500");
   });
 
-  it("When google button is clicked but a error service occurred should go to error page", async () => {
+  it("When login google button is clicked but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
     const googleButton = screen.getByTestId("google-button");
     await userEvent.click(googleButton);
     expect(mockRouter.asPath).toEqual("/500");
   });
 
-  it("When google button is clicked sucessfully should go to profile page", async () => {
+  it("When login google button is clicked sucessfully should go to profile page", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
@@ -128,14 +130,14 @@ describe("Login page", () => {
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
-  it("When facebook button is clicked but a error service occurred should go to error page", async () => {
+  it("When login facebook button is clicked but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
     const facebookButton = screen.getByTestId("facebook-button");
     await userEvent.click(facebookButton);
     expect(mockRouter.asPath).toEqual("/500");
   });
 
-  it("When facebook button is clicked sucessfully should go to profile page", async () => {
+  it("When login facebook button is clicked sucessfully should go to profile page", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
@@ -145,14 +147,14 @@ describe("Login page", () => {
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
-  it("When twitter button is clicked but a error service occurred should go to error page", async () => {
+  it("When login twitter button is clicked but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
     const twitterButton = screen.getByTestId("twitter-button");
     await userEvent.click(twitterButton);
     expect(mockRouter.asPath).toEqual("/500");
   });
 
-  it("When twitter button is clicked sucessfully should go to profile page", async () => {
+  it("When login twitter button is clicked sucessfully should go to profile page", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
@@ -162,7 +164,7 @@ describe("Login page", () => {
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
-  it("When github button is clicked but a error service occurred should go to error page", async () => {
+  it("When login github button is clicked but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
     const githubButton = screen.getByTestId("github-button");
     await userEvent.click(githubButton);

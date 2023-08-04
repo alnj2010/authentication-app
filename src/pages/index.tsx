@@ -1,8 +1,7 @@
 import Link from "next/link";
-import IconInput from "@/components/IconInput";
-import Button from "@/components/Button";
+import { regularLogin } from "@/services/login-service";
 import SocialAuthContainer from "@/containers/SocialAuthContainer";
-import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
 import AuthForm from "@/components/AuthForm";
@@ -16,7 +15,11 @@ export default function Login() {
         </Typography>
       </div>
       <div className="pb-8">
-        <AuthForm />
+        <AuthForm
+          buttonTitle="Login"
+          buttonId="login-button"
+          authService={regularLogin}
+        />
       </div>
       <div>
         <div className="text-center	pb-6">

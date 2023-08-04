@@ -1,5 +1,5 @@
 import { SocialProviders } from "@/domain/types";
-import { socialAuth } from "@/services/login";
+import { socialAuth } from "@/services/social-auth-service";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
