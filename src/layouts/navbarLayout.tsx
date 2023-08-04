@@ -12,9 +12,9 @@ const notoSans = Noto_Sans_Display({
 
 type Props = {
   children: ReactElement;
-  user?: User;
+  user: User;
 };
-export default function NavbarLayout({ children, user = userDummy }: Props) {
+export default function NavbarLayout({ children, user }: Props) {
   return (
     <main
       className={`py-4 px-5 h-screen ${notoSans.variable} font-sans sm:px-20 dark:bg-dark`}

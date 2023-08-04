@@ -3,9 +3,6 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Profile from "@/pages/profile";
 import { userDummy } from "../dummies";
-import NavbarLayout from "@/layouts/navbarLayout";
-import WelcomeProfilePage from "@/components/WelcomeProfilePage";
-import ContentLayout from "@/layouts/contentLayout";
 import userEvent from "@testing-library/user-event";
 
 import mockRouter from "next-router-mock";
@@ -15,17 +12,7 @@ jest.mock("next/router", () => require("next-router-mock"));
 
 describe("Profile page", () => {
   beforeEach(() => {
-    render(
-      <NavbarLayout user={userDummy}>
-        <>
-          <WelcomeProfilePage />
-          <ContentLayout>
-            <Profile user={userDummy} />
-          </ContentLayout>
-        </>
-      </NavbarLayout>,
-      { wrapper: MemoryRouterProvider }
-    );
+    render(<Profile user={userDummy} />, { wrapper: MemoryRouterProvider });
   });
 
   it("Should render properly", () => {

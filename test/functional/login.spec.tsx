@@ -39,6 +39,10 @@ describe("Login page", () => {
     screen.getByTestId("textfield-user-email");
     screen.getByTestId("textfield-user-password");
     screen.getByTestId("login-button");
+    screen.getByTestId("google-button");
+    screen.getByTestId("facebook-button");
+    screen.getByTestId("twitter-button");
+    screen.getByTestId("github-button");
     screen.getByTestId("register-link");
     expect(screen.queryByTestId("error-messages")).toBeNull();
   });
@@ -89,14 +93,14 @@ describe("Login page", () => {
     );
   });
 
-  it("When form is submited with valid data should not show error messages", async () => {
+  it("When form is submited with valid data should go to profile page", async () => {
     jest.spyOn(Api, "post").mockResolvedValue({
       ok: true,
       data: { code: 200 },
     });
 
     await submitForm(userDummy);
-    expect(screen.queryByTestId("error-messages")).toBeNull();
+    expect(mockRouter.asPath).toEqual("/profile");
   });
 
   it("When form is submited with valid data but a error service occurred should go to error page", async () => {
@@ -105,5 +109,22 @@ describe("Login page", () => {
     await submitForm(userDummy);
 
     expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When google button is clicked but a error service occurred should go to error page", async () => {
+    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    const googleButton = screen.getByTestId("google-button");
+    await userEvent.click(googleButton);
+    expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When google button is clicked sucessfully should go to profile page", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue({
+      ok: true,
+      data: { code: 200 },
+    });
+    const googleButton = screen.getByTestId("google-button");
+    await userEvent.click(googleButton);
+    expect(mockRouter.asPath).toEqual("/profile");
   });
 });

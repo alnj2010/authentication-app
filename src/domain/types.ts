@@ -24,3 +24,5 @@ export type CustomResponse<TData> = {
   error?: string;
   data?: TData;
 };
+
+export type SocialProviders = "google" | "facebook" | "twitter" | "github";

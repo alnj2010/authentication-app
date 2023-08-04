@@ -3,24 +3,12 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import EditProfile from "@/pages/profile/edit";
 import { userDummy } from "../dummies";
-import NavbarLayout from "@/layouts/navbarLayout";
-import BackLink from "@/components/BackLink";
-import ContentLayout from "@/layouts/contentLayout";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
 describe("Edit Profile page", () => {
   beforeEach(() => {
-    render(
-      <NavbarLayout user={userDummy}>
-        <>
-          <BackLink />
-          <ContentLayout>
-            <EditProfile user={userDummy} />
-          </ContentLayout>
-        </>
-      </NavbarLayout>
-    );
+    render(<EditProfile user={userDummy} />);
   });
 
   it("Should render properly", () => {

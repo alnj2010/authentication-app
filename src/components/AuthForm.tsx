@@ -8,7 +8,10 @@ import { LoginError } from "@/domain/errors/login-error";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
 import { useRouter } from "next/router";
-import { LOGIN_CLIEN_ERROR_INVALID_EMAIL, LOGIN_CLIEN_ERROR_PASSWORD_EMPTY } from "@/domain/constants";
+import {
+  LOGIN_CLIEN_ERROR_INVALID_EMAIL,
+  LOGIN_CLIEN_ERROR_PASSWORD_EMPTY,
+} from "@/domain/constants";
 
 export default function AuthForm() {
   const router = useRouter();
@@ -43,6 +46,7 @@ export default function AuthForm() {
           password,
         };
         await regularLogin(authInfo);
+        router.push("/profile");
       } catch (error) {
         if (error instanceof LoginError) errors.push(error.message);
         else if (error instanceof CustomApiError) router.push("/500");

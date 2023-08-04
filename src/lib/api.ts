@@ -23,13 +23,13 @@ export const Api = new (class {
     return this.request<T>(url);
   }
 
-  async post<TBody, T>(url: string, body: TBody): Promise<ApiResponse<T>> {
+  async post<TBody, T>(url: string, body?: TBody): Promise<ApiResponse<T>> {
     return this.request<T>(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
     });
   }
 })();
