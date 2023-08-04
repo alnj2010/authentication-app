@@ -22,7 +22,7 @@ export default function TextField({
       </label>
       <input
         readOnly
-        className="border-gray border-solid border rounded-lg h-12 w-full px-[18px] py-[17px] placeholder-gray-light dark:bg-dark dark:text-gray-secondary dark:focus:ring-gray-light "
+        className="border-gray border-solid border rounded-lg h-12 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
         type={type}
         name={id}
         value={value}

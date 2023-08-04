@@ -23,7 +23,7 @@ export default function TextAreaField({
       <textarea
         readOnly
         value={value}
-        className="border-gray border-solid border rounded-lg h-24 w-full px-[18px] py-[17px] placeholder-gray-light dark:bg-dark dark:text-gray-secondary"
+        className="border-gray border-solid border rounded-lg h-24 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
         name={id}
         id={id}
         data-testid={id}
