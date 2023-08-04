@@ -127,4 +127,55 @@ describe("Login page", () => {
     await userEvent.click(googleButton);
     expect(mockRouter.asPath).toEqual("/profile");
   });
+
+  it("When facebook button is clicked but a error service occurred should go to error page", async () => {
+    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    const facebookButton = screen.getByTestId("facebook-button");
+    await userEvent.click(facebookButton);
+    expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When facebook button is clicked sucessfully should go to profile page", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue({
+      ok: true,
+      data: { code: 200 },
+    });
+    const facebookButton = screen.getByTestId("facebook-button");
+    await userEvent.click(facebookButton);
+    expect(mockRouter.asPath).toEqual("/profile");
+  });
+
+  it("When twitter button is clicked but a error service occurred should go to error page", async () => {
+    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    const twitterButton = screen.getByTestId("twitter-button");
+    await userEvent.click(twitterButton);
+    expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When twitter button is clicked sucessfully should go to profile page", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue({
+      ok: true,
+      data: { code: 200 },
+    });
+    const twitterButton = screen.getByTestId("twitter-button");
+    await userEvent.click(twitterButton);
+    expect(mockRouter.asPath).toEqual("/profile");
+  });
+
+  it("When github button is clicked but a error service occurred should go to error page", async () => {
+    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    const githubButton = screen.getByTestId("github-button");
+    await userEvent.click(githubButton);
+    expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When github button is clicked sucessfully should go to profile page", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue({
+      ok: true,
+      data: { code: 200 },
+    });
+    const githubButton = screen.getByTestId("github-button");
+    await userEvent.click(githubButton);
+    expect(mockRouter.asPath).toEqual("/profile");
+  });
 });
