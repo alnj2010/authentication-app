@@ -3,15 +3,17 @@ import Button from "@/components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import { AuthInfo, AuthService } from "@/domain/types";
-import { LoginError } from "@/domain/errors/login-error";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
 import { useRouter } from "next/router";
 import {
-  AUTH_CLIEN_ERROR_INVALID_EMAIL,
-  AUTH_CLIEN_ERROR_PASSWORD_EMPTY,
-  AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT,
-} from "@/domain/constants";
+  emailPatternValidator,
+  min4CharsValidator,
+  nonEmptyValidator,
+  validateScheme,
+} from "@/lib/validator";
+import { FormValidationError } from "@/domain/errors/form-validation-error";
+import { AuthError } from "@/domain/errors/auth-error";
 
 type Props = {
   authService: AuthService;
@@ -38,33 +40,29 @@ export default function AuthForm({
 
   const handlerSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emailRegex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
-    const errors: Array<string> = [];
 
-    if (!email || !emailRegex.test(email)) {
-      errors.push(AUTH_CLIEN_ERROR_INVALID_EMAIL);
-    }
+    const authInfoScheme = {
+      email: {
+        value: email,
+        validators: [nonEmptyValidator, emailPatternValidator],
+      },
+      password: {
+        value: password,
+        validators: [nonEmptyValidator, min4CharsValidator],
+      },
+    };
 
-    if (!password) {
-      errors.push(AUTH_CLIEN_ERROR_PASSWORD_EMPTY);
-    } else if (password.length < 4) {
-      errors.push(AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT);
-    }
+    try {
+      const authInfo = validateScheme<AuthInfo>(authInfoScheme);
 
-    if (errors.length === 0) {
-      try {
-        const authInfo: AuthInfo = {
-          email,
-          password,
-        };
-        await authService(authInfo);
-        router.push("/profile");
-      } catch (error) {
-        if (error instanceof LoginError) errors.push(error.message);
-        else if (error instanceof CustomApiError) router.push("/500");
-      }
+      await authService(authInfo);
+      router.push("/profile");
+    } catch (error) {
+      if (error instanceof AuthError) setErrorMessages([error.message]);
+      else if (error instanceof FormValidationError)
+        setErrorMessages(error.errorMsgs);
+      else if (error instanceof CustomApiError) router.push("/500");
     }
-    setErrorMessages(errors);
   };
 
   const isDisabled = email && password ? false : true;

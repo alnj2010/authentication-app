@@ -1,4 +1,4 @@
-import { LoginError } from "@/domain/errors/login-error";
+import { AuthError } from "@/domain/errors/auth-error";
 import { AuthInfo, CustomResponse, SocialProviders } from "@/domain/types";
 import { Api } from "@/lib/api";
 
@@ -10,7 +10,7 @@ export async function socialAuth(provider: SocialProviders) {
     if (response.ok) {
       return response.data;
     } else {
-      throw new LoginError(response.data.error ?? "login api error");
+      throw new AuthError(response.data.error ?? "auth api error");
     }
   } catch (error) {
     throw error;

@@ -26,5 +26,11 @@ export type CustomResponse<TData> = {
 };
 
 export type AuthService = (authInfo: AuthInfo) => void;
+export type ClientErrorMsg = (fieldName: string) => string;
+export type Validator = (value: string) => ClientErrorMsg;
+
+export type ValidationScheme = {
+  [key: string]: { value: string; validators: Array<Validator> };
+};
 
 export type SocialProviders = "google" | "facebook" | "twitter" | "github";

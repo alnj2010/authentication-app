@@ -1,3 +1,5 @@
+import { AuthInfo } from "@/domain/types";
+
 export const userDummy = {
   photo: "/camera.svg",
   bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti hic voluptates ratione dolores, totam, commodi est quo voluptatem minus porro eaque asperiores. Doloremque unde neque voluptatibus natus non quasi provident.",
@@ -5,4 +7,9 @@ export const userDummy = {
   phone: "908249274292",
   email: "xanthe.neal@gmail.com",
   password: "******",
+};
+
+export const userAuthDummy: AuthInfo = {
+  email: userDummy.email,
+  password: userDummy.password,
 };

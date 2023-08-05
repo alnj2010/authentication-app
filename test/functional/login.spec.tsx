@@ -5,15 +5,13 @@ import Login from "@/pages";
 import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
-import { userDummy } from "../dummies";
+import { userAuthDummy } from "../dummies";
 import { Api } from "@/lib/api";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
-import {
-  AUTH_CLIEN_ERROR_INVALID_EMAIL,
-  AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT,
-  LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS,
-} from "@/domain/constants";
+
 import { submitForm } from "../shared";
+import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
+import { LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
 
 jest.mock("@/lib/api");
 
@@ -50,8 +48,8 @@ describe("Login page", () => {
   it("When login textfields are filled the login button should be active", async () => {
     const textFieldUserEmail = screen.getByTestId("textfield-user-email");
     const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-    await userEvent.type(textFieldUserEmail, userDummy.email);
-    await userEvent.type(textFieldUserPassword, userDummy.password);
+    await userEvent.type(textFieldUserEmail, userAuthDummy.email);
+    await userEvent.type(textFieldUserPassword, userAuthDummy.password);
 
     const loginButton = screen.getByTestId("login-button");
 
@@ -60,24 +58,24 @@ describe("Login page", () => {
 
   it("When login form is submited but there is a invalid email should show a messages error", async () => {
     await submitForm("login", {
-      password: userDummy.password,
+      password: userAuthDummy.password,
       email: "invalidemail",
     });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      AUTH_CLIEN_ERROR_INVALID_EMAIL
+      invalidFieldMsg("email")
     );
   });
 
   it("When login form is submited but there is a with less than (4) characters should show a messages error", async () => {
-    await submitForm("login", { password: "p", email: userDummy.email });
+    await submitForm("login", { password: "p", email: userAuthDummy.email });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      AUTH_CLIEN_ERROR_PASSWORD_INVALID_LENGHT
+      lessThan4CharsFieldMsg("password")
     );
   });
 
@@ -86,13 +84,14 @@ describe("Login page", () => {
       ok: false,
       data: { code: 401, error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS },
     });
-    await submitForm("login", userDummy);
+    await submitForm("login", userAuthDummy);
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
       LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS
     );
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
   });
 
   it("When login form is submited with valid data should go to profile page", async () => {
@@ -101,15 +100,18 @@ describe("Login page", () => {
       data: { code: 200 },
     });
 
-    await submitForm("login", userDummy);
+    await submitForm("login", userAuthDummy);
+
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
   it("When login form is submited with valid data but a error service occurred should go to error page", async () => {
     jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
 
-    await submitForm("login", userDummy);
+    await submitForm("login", userAuthDummy);
 
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/500");
   });
 });
