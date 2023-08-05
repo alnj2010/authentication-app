@@ -2,7 +2,7 @@ import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
-import { AuthInfo } from "@/domain/types";
+import { AuthInfo, AuthService } from "@/domain/types";
 import { LoginError } from "@/domain/errors/login-error";
 import { CustomApiError } from "@/domain/errors/custom-api-error";
 
@@ -14,7 +14,7 @@ import {
 } from "@/domain/constants";
 
 type Props = {
-  authService: (authInfo: AuthInfo) => void;
+  authService: AuthService;
   buttonTitle: string;
   buttonId: string;
 };

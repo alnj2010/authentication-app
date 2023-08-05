@@ -25,4 +25,6 @@ export type CustomResponse<TData> = {
   data?: TData;
 };
 
+export type AuthService = (authInfo: AuthInfo) => void;
+
 export type SocialProviders = "google" | "facebook" | "twitter" | "github";
