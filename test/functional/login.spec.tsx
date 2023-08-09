@@ -5,30 +5,18 @@ import Login from "@/pages";
 import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
-import { userDummy } from "../dummies";
+import { userAuthDummy } from "../dummies";
 import { Api } from "@/lib/api";
-import { CustomApiError } from "@/domain/errors/custom-api-error";
-import {
-  LOGIN_CLIEN_ERROR_INVALID_EMAIL,
-  LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS,
-} from "@/domain/constants";
-import { AuthInfo } from "@/domain/types";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
+
+import { submitAuthForm } from "../shared";
+import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
+import { LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
+import { ApiError } from "@/domain/errors/api-error";
 
 jest.mock("@/lib/api");
 
 jest.mock("next/router", () => require("next-router-mock"));
-
-async function submitForm(user?: AuthInfo) {
-  const textFieldUserEmail = screen.getByTestId("textfield-user-email");
-  const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-
-  if (user) {
-    await userEvent.type(textFieldUserEmail, user.email);
-    await userEvent.type(textFieldUserPassword, user.password);
-  }
-  const loginButton = screen.getByTestId("login-button");
-  await userEvent.click(loginButton);
-}
 
 describe("Login page", () => {
   beforeEach(() => {
@@ -39,6 +27,10 @@ describe("Login page", () => {
     screen.getByTestId("textfield-user-email");
     screen.getByTestId("textfield-user-password");
     screen.getByTestId("login-button");
+    screen.getByTestId("google-button");
+    screen.getByTestId("facebook-button");
+    screen.getByTestId("twitter-button");
+    screen.getByTestId("github-button");
     screen.getByTestId("register-link");
     expect(screen.queryByTestId("error-messages")).toBeNull();
   });
@@ -54,56 +46,74 @@ describe("Login page", () => {
     expect(loginButton.hasAttribute("disabled")).toBeTruthy();
   });
 
-  it("When textfields are filled the login button should be active", async () => {
+  it("When login textfields are filled the login button should be active", async () => {
     const textFieldUserEmail = screen.getByTestId("textfield-user-email");
     const textFieldUserPassword = screen.getByTestId("textfield-user-password");
-    await userEvent.type(textFieldUserEmail, userDummy.email);
-    await userEvent.type(textFieldUserPassword, userDummy.password);
+    await userEvent.type(textFieldUserEmail, userAuthDummy.email);
+    await userEvent.type(textFieldUserPassword, userAuthDummy.password);
 
     const loginButton = screen.getByTestId("login-button");
 
     expect(loginButton.hasAttribute("disabled")).toBeFalsy();
   });
 
-  it("Whe form is submited but there is a invalid email should show a messages error", async () => {
-    await submitForm({ password: userDummy.password, email: "invalidemail" });
+  it("When login form is submited but there is a invalid email should show a messages error", async () => {
+    await submitAuthForm("login", {
+      password: userAuthDummy.password,
+      email: "invalidemail",
+    });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      LOGIN_CLIEN_ERROR_INVALID_EMAIL
+      invalidFieldMsg("email")
     );
   });
 
-  it("When form is submited with correct data but invalid credentials should show error messages", async () => {
-    jest.spyOn(Api, "post").mockResolvedValue({
-      ok: false,
-      data: { code: 401, error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS },
+  it("When login form is submited but there is a with less than (4) characters should show a messages error", async () => {
+    await submitAuthForm("login", {
+      password: "p",
+      email: userAuthDummy.email,
     });
-    await submitForm(userDummy);
+
+    const errorMessages = screen.getByTestId("error-messages");
+    expect(errorMessages.childElementCount).toBe(1);
+    expect(errorMessages.firstChild?.textContent).toContain(
+      lessThan4CharsFieldMsg("password")
+    );
+  });
+
+  it("When login form is submited with correct data but invalid credentials should show error messages", async () => {
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new ApiError(LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS));
+    await submitAuthForm("login", userAuthDummy);
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
       LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS
     );
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
   });
 
-  it("When form is submited with valid data should not show error messages", async () => {
-    jest.spyOn(Api, "post").mockResolvedValue({
-      ok: true,
-      data: { code: 200 },
-    });
+  it("When login form is submited with valid data should go to profile page", async () => {
+    jest.spyOn(Api, "post").mockResolvedValue(null);
 
-    await submitForm(userDummy);
-    expect(screen.queryByTestId("error-messages")).toBeNull();
+    await submitAuthForm("login", userAuthDummy);
+
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect(mockRouter.asPath).toEqual("/profile");
   });
 
-  it("When form is submited with valid data but a error service occurred should go to error page", async () => {
-    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+  it("When login form is submited with valid data but a error service occurred should go to error page", async () => {
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new InternalONotFoundApiError("some error"));
 
-    await submitForm(userDummy);
+    await submitAuthForm("login", userAuthDummy);
 
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/500");
   });
 });

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChangeEventHandler, InputHTMLAttributes } from "react";
+import { ChangeEventHandler } from "react";
 
 type Props = {
   id: string;
@@ -38,7 +38,7 @@ export default function IconInput({
           data-testid={id}
           type={type}
           placeholder={placeholder}
-          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base placeholder-gray text-black-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light"
+          className="absolute w-full top-0 h-[46px] bg-transparent rounded-lg pl-12 pr-5 font-normal text-base placeholder-gray text-black-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light"
         />
       </label>
     </>

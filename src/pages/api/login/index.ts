@@ -10,10 +10,11 @@ export default function handler(
     const { email, password } = req.body;
     console.log({ email, password });
 
-    throw new Error("some Error")
+    throw new Error("some Error");
     res.status(401).json({
       code: 401,
       error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS,
+      data: null,
     });
   }
 }

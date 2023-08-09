@@ -1,6 +1,4 @@
-import Image from "next/image";
 import type { ReactElement } from "react";
-import { Noto_Sans_Display } from "next/font/google";
 import Footer from "@/components/Footer";
 
 type Props = {

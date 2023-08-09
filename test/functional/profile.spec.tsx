@@ -3,29 +3,23 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Profile from "@/pages/profile";
 import { userDummy } from "../dummies";
-import NavbarLayout from "@/layouts/navbarLayout";
-import WelcomeProfilePage from "@/components/WelcomeProfilePage";
-import ContentLayout from "@/layouts/contentLayout";
 import userEvent from "@testing-library/user-event";
 
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 
 jest.mock("next/router", () => require("next-router-mock"));
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: (props: any) => {
+    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+    return <img {...props} />;
+  },
+}));
 
 describe("Profile page", () => {
   beforeEach(() => {
-    render(
-      <NavbarLayout user={userDummy}>
-        <>
-          <WelcomeProfilePage />
-          <ContentLayout>
-            <Profile user={userDummy} />
-          </ContentLayout>
-        </>
-      </NavbarLayout>,
-      { wrapper: MemoryRouterProvider }
-    );
+    render(<Profile user={userDummy} />, { wrapper: MemoryRouterProvider });
   });
 
   it("Should render properly", () => {
@@ -46,7 +40,7 @@ describe("Profile page", () => {
     expect(screen.getByTestId("password-label").textContent).toBe(
       userDummy.password
     );
-    expect(screen.getByTestId("photo-label").getAttribute("src")).toBe(
+    expect(screen.getByTestId("photo-label").getAttribute("src")).toContain(
       userDummy.photo
     );
   });

@@ -1,54 +1,64 @@
 import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
-import { regularLogin } from "@/services/login";
-import { AuthInfo } from "@/domain/types";
-import { LoginError } from "@/domain/errors/login-error";
-import { CustomApiError } from "@/domain/errors/custom-api-error";
+import { AuthInfo, AuthService } from "@/domain/types";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 
 import { useRouter } from "next/router";
-import { LOGIN_CLIEN_ERROR_INVALID_EMAIL, LOGIN_CLIEN_ERROR_PASSWORD_EMPTY } from "@/domain/constants";
+import {
+  emailPatternValidator,
+  min4CharsValidator,
+  nonEmptyValidator,
+  validateScheme,
+} from "@/lib/validator";
+import { FormValidationError } from "@/domain/errors/form-validation-error";
+import { ApiError } from "@/domain/errors/api-error";
+import { useTextField } from "@/hooks/useTextFile";
 
-export default function AuthForm() {
+type Props = {
+  authService: AuthService;
+  buttonTitle: string;
+  buttonId: string;
+};
+
+export default function AuthForm({
+  authService,
+  buttonTitle,
+  buttonId,
+}: Props) {
   const router = useRouter();
 
-  const [email, setEmail] = useState<string>("");
+  const [email, emailHandler] = useTextField("");
+  const [password, passwordHandler] = useTextField("");
+
   const [errorMessages, setErrorMessages] = useState<Array<string>>([]);
-  const [password, setPassword] = useState<string>("");
-
-  const emailHandler = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmail(e.target.value);
-
-  const passwordHandler = (e: ChangeEvent<HTMLInputElement>) =>
-    setPassword(e.target.value);
 
   const handlerSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emailRegex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
-    const errors: Array<string> = [];
 
-    if (!email || !emailRegex.test(email)) {
-      errors.push(LOGIN_CLIEN_ERROR_INVALID_EMAIL);
-    }
+    const authInfoScheme = {
+      email: {
+        value: email,
+        validators: [nonEmptyValidator, emailPatternValidator],
+      },
+      password: {
+        value: password,
+        validators: [nonEmptyValidator, min4CharsValidator],
+      },
+    };
 
-    if (!password) {
-      errors.push(LOGIN_CLIEN_ERROR_PASSWORD_EMPTY);
-    }
+    try {
+      const authInfo = validateScheme<AuthInfo>(authInfoScheme);
 
-    if (errors.length === 0) {
-      try {
-        const authInfo: AuthInfo = {
-          email,
-          password,
-        };
-        await regularLogin(authInfo);
-      } catch (error) {
-        if (error instanceof LoginError) errors.push(error.message);
-        else if (error instanceof CustomApiError) router.push("/500");
-      }
+      await authService(authInfo);
+      router.push("/profile");
+    } catch (error) {
+      if (error instanceof ApiError) setErrorMessages([error.message]);
+      else if (error instanceof FormValidationError)
+        setErrorMessages(error.errorMsgs);
+      else if (error instanceof InternalONotFoundApiError) router.push("/500");
     }
-    setErrorMessages(errors);
   };
 
   const isDisabled = email && password ? false : true;
@@ -78,8 +88,8 @@ export default function AuthForm() {
           placeholder="Password"
         />
       </div>
-      <Button id="login-button" disabled={isDisabled}>
-        Login
+      <Button data-testid={buttonId} id={buttonId} disabled={isDisabled}>
+        {buttonTitle}
       </Button>
       {areThereErrors && (
         <div data-testid="error-messages" className="pt-3">

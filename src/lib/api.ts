@@ -1,35 +1,44 @@
-import { CustomApiError } from "@/domain/errors/custom-api-error";
-import { ApiResponse } from "@/domain/types";
+import { ApiError } from "@/domain/errors/api-error";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
+import { CustomResponse } from "@/domain/types";
 
 export const Api = new (class {
-  private async request<T>(
-    url: string,
-    config?: RequestInit
-  ): Promise<ApiResponse<T>> {
+  private async request(url: string, config?: RequestInit): Promise<any> {
     const response: Response = await fetch(url, config);
 
     try {
-      const data = await response.json();
-      return {
-        ok: response.ok,
-        data,
-      };
+      const payload: CustomResponse<any> = await response.json();
+      if (response.ok) {
+        return payload.data;
+      } else {
+        throw new ApiError(payload.error);
+      }
     } catch (error) {
-      throw new CustomApiError(response.statusText);
+      throw new InternalONotFoundApiError(response.statusText);
     }
   }
 
-  async get<T>(url: string): Promise<ApiResponse<T>> {
-    return this.request<T>(url);
+  async get(url: string, config?: RequestInit): Promise<any> {
+    return this.request(url, config);
   }
 
-  async post<TBody, T>(url: string, body: TBody): Promise<ApiResponse<T>> {
-    return this.request<T>(url, {
+  async post(
+    url: string,
+    body: Object | null,
+    config?: RequestInit
+  ): Promise<any> {
+    return this.request(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : undefined,
+      ...config,
+    });
+  }
+
+  async put(url: string, body: FormData, config?: RequestInit): Promise<any> {
+    return this.request(url, {
+      method: "PUT",
+      body,
+      ...config,
     });
   }
 })();

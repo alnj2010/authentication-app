@@ -1,47 +1,58 @@
+import Typography from "@/components/Typography";
+import { SocialProviders } from "@/domain/types";
+import { socialAuthService } from "@/services/social-auth-service";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 type Props = {};
 const authProviders = [
-  { id: "google", imgSrc: "/Google.svg", imgAlt: "Sign in with Google" },
-  { id: "facebook", imgSrc: "/Facebook.svg", imgAlt: "Sign in with Facebook" },
-  { id: "twitter", imgSrc: "/Twitter.svg", imgAlt: "Sign in with Twitter" },
-  { id: "github", imgSrc: "/Github.svg", imgAlt: "Sign in with Github" },
+  { id: "google", imgSrc: "/Google.svg" },
+  { id: "facebook", imgSrc: "/Facebook.svg" },
+  { id: "twitter", imgSrc: "/Twitter.svg" },
+  { id: "github", imgSrc: "/Github.svg" },
 ];
 
 export default function SocialAuthContainer({}: Props) {
-  return (
-    <>
-      <div className="flex justify-center">
+  const router = useRouter();
 
-        <Image
-          src="/Google.svg"
-          alt="Sign in with Google"
-          className="mr-5"
-          width={42}
-          height={42}
-        />
-        <Image
-          src="/Facebook.svg"
-          alt="Sign in with Facebook"
-          className="mr-5"
-          width={42}
-          height={42}
-        />
-        <Image
-          src="/Twitter.svg"
-          alt="Sign in with Twitter"
-          className="mr-5"
-          width={42}
-          height={42}
-        />
-        <Image
-          src="/Gihub.svg"
-          alt="Sign in with Github"
-          className=""
-          width={42}
-          height={42}
-        />
+  const handlerSocialAuthButton = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const provider = e.currentTarget.id;
+    try {
+      await socialAuthService(provider as SocialProviders);
+      router.push("/profile");
+    } catch (error) {
+      router.push("/500");
+    }
+  };
+  return (
+    <div>
+      <div className="text-center	pb-6">
+        <Typography variant="body2" color="text-gray">
+          or continue with these social profile
+        </Typography>
       </div>
-    </>
+      <div className=" pb-8">
+        <div className="max-w-[224px] m-auto flex justify-between">
+          {authProviders.map((item) => (
+            <button
+              id={item.id}
+              onClick={handlerSocialAuthButton}
+              className="min-w-[42px]"
+              key={item.id}
+              data-testid={`${item.id}-button`}
+            >
+              <Image
+                src={item.imgSrc}
+                alt={`Sign in with ${item.id}`}
+                width={42}
+                height={42}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
