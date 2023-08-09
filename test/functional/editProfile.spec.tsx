@@ -70,6 +70,7 @@ export async function submitEditForm(user: UserSubmit) {
 describe("Edit Profile page", () => {
   beforeEach(() => {
     global.URL.createObjectURL = jest.fn().mockReturnValue("/temporal-url");
+    (Api.put as jest.Mock).mockReset();
   });
   it("Should render properly", () => {
     render(<EditProfile user={userDummy} />);
@@ -307,19 +308,12 @@ describe("Edit Profile page", () => {
     );
   });
 
-  it("When edit form is submited with valid data should go to profile page", async () => {
-    render(<EditProfile user={userDummy} />, { wrapper: MemoryRouterProvider });
-    await submitEditForm({
-      ...userSubmitDummy,
-      name: "new name",
-    });
-    expect(mockRouter.asPath).toEqual("/profile");
-  });
-
   it("When edit form is submited with valid data but a error service occurred should go to error page", async () => {
     render(<EditProfile user={userDummy} />, { wrapper: MemoryRouterProvider });
 
-    jest.spyOn(Api, "put").mockRejectedValue(new InternalONotFoundApiError("some error"));
+    jest
+      .spyOn(Api, "put")
+      .mockRejectedValue(new InternalONotFoundApiError("some error"));
 
     await submitEditForm({
       ...userSubmitDummy,
@@ -327,5 +321,23 @@ describe("Edit Profile page", () => {
     });
 
     expect(mockRouter.asPath).toEqual("/500");
+  });
+
+  it("When edit form is submited with valid data should go to profile page", async () => {
+    render(<EditProfile user={userDummy} />, { wrapper: MemoryRouterProvider });
+    await submitEditForm({
+      ...userSubmitDummy,
+      name: "new name",
+    });
+    const received = Object.fromEntries(
+      (Api.put as jest.Mock).mock.calls[0][1]
+    );
+    expect(Api.put).toHaveBeenCalledTimes(1);
+    expect(received.name).toBe("new name");
+    expect(received.bio).toBe(userSubmitDummy.bio);
+    expect(received.phone).toBe(userSubmitDummy.phone);
+    expect(received.email).toBe(userSubmitDummy.email);
+    expect(received.password).toBe(userSubmitDummy.password);
+    expect(mockRouter.asPath).toEqual("/profile");
   });
 });
