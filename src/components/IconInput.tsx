@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChangeEventHandler, InputHTMLAttributes } from "react";
+import { ChangeEventHandler } from "react";
 
 type Props = {
   id: string;

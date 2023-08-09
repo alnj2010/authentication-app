@@ -1,6 +1,6 @@
 import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import { AuthInfo, AuthService } from "@/domain/types";
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
