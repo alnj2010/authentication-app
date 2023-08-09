@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import { AuthInfo, AuthService } from "@/domain/types";
-import { CustomApiError } from "@/domain/errors/custom-api-error";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 
 import { useRouter } from "next/router";
 import {
@@ -13,7 +13,8 @@ import {
   validateScheme,
 } from "@/lib/validator";
 import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { AuthError } from "@/domain/errors/auth-error";
+import { ApiError } from "@/domain/errors/api-error";
+import { useTextField } from "@/hooks/useTextFile";
 
 type Props = {
   authService: AuthService;
@@ -28,15 +29,10 @@ export default function AuthForm({
 }: Props) {
   const router = useRouter();
 
-  const [email, setEmail] = useState<string>("");
+  const [email, emailHandler] = useTextField("");
+  const [password, passwordHandler] = useTextField("");
+
   const [errorMessages, setErrorMessages] = useState<Array<string>>([]);
-  const [password, setPassword] = useState<string>("");
-
-  const emailHandler = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmail(e.target.value);
-
-  const passwordHandler = (e: ChangeEvent<HTMLInputElement>) =>
-    setPassword(e.target.value);
 
   const handlerSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,10 +54,10 @@ export default function AuthForm({
       await authService(authInfo);
       router.push("/profile");
     } catch (error) {
-      if (error instanceof AuthError) setErrorMessages([error.message]);
+      if (error instanceof ApiError) setErrorMessages([error.message]);
       else if (error instanceof FormValidationError)
         setErrorMessages(error.errorMsgs);
-      else if (error instanceof CustomApiError) router.push("/500");
+      else if (error instanceof InternalONotFoundApiError) router.push("/500");
     }
   };
 

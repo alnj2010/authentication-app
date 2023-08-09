@@ -1,8 +1,7 @@
 import type { ReactElement } from "react";
 import { Noto_Sans_Display } from "next/font/google";
 import Dropdown from "@/components/Dropdown";
-import { User } from "@/domain/types";
-import { userDummy } from "../../test/dummies";
+import { UserResponse } from "@/domain/types";
 import DevChallengesPicture from "@/components/DevChallengesPicture";
 
 const notoSans = Noto_Sans_Display({
@@ -12,7 +11,7 @@ const notoSans = Noto_Sans_Display({
 
 type Props = {
   children: ReactElement;
-  user: User;
+  user: UserResponse;
 };
 export default function NavbarLayout({ children, user }: Props) {
   return (

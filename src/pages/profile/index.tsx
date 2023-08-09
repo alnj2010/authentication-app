@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ReactElement } from "react";
 import Typography from "@/components/Typography";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
-import { User } from "@/domain/types";
+import { UserResponse } from "@/domain/types";
 import { userDummy } from "../../../test/dummies";
 import NavbarLayout from "@/layouts/navbarLayout";
 import ContentLayout from "@/layouts/contentLayout";
@@ -13,7 +13,7 @@ import SectionInfo from "@/components/SectionInfo";
 import WelcomeProfilePage from "@/components/WelcomeProfilePage";
 
 type Props = {
-  user: User;
+  user: UserResponse;
 };
 
 export default function Profile({ user = userDummy }: Props) {
@@ -61,7 +61,7 @@ export default function Profile({ user = userDummy }: Props) {
                       className="truncate sm:text-lg sm:font-medium dark:text-gray-secondary"
                       dataTestid={`${title.toLowerCase()}-label`}
                     >
-                      {user[title as keyof User]}
+                      {user[title as keyof UserResponse]}
                     </Typography>
                   )}
                 </ProfileInfoItem>

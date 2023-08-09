@@ -1,10 +1,10 @@
-import { regularLogin } from "@/services/login-service";
+import { loginService } from "@/services/login-service";
 import AuthLayout from "@/layouts/authLayout";
 
 export default function Login() {
   return (
     <AuthLayout
-      authService={regularLogin}
+      authService={loginService}
       id="login"
       sectionTitle="Login"
       submitButtonText="Login"

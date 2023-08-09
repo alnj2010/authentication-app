@@ -6,10 +6,10 @@ import userEvent from "@testing-library/user-event";
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 import { userAuthDummy } from "../dummies";
-import { submitForm } from "../shared";
+import { submitAuthForm } from "../shared";
 
 import { Api } from "@/lib/api";
-import { CustomApiError } from "@/domain/errors/custom-api-error";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
 
 jest.mock("next/router", () => require("next-router-mock"));
@@ -54,7 +54,7 @@ describe("Register page", () => {
   });
 
   it("When register form is submited but there is a invalid email should show a messages error", async () => {
-    await submitForm("register", {
+    await submitAuthForm("register", {
       password: userAuthDummy.password,
       email: "invalidemail",
     });
@@ -67,7 +67,7 @@ describe("Register page", () => {
   });
 
   it("When register form is submited but there is a with less than (4) characters should show a messages error", async () => {
-    await submitForm("register", { password: "p", email: userAuthDummy.email });
+    await submitAuthForm("register", { password: "p", email: userAuthDummy.email });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
@@ -82,16 +82,16 @@ describe("Register page", () => {
       data: { code: 200 },
     });
 
-    await submitForm("register", userAuthDummy);
+    await submitAuthForm("register", userAuthDummy);
 
     expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
   it("When register form is submited with valid data but a error service occurred should go to error page", async () => {
-    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    jest.spyOn(Api, "post").mockRejectedValue(new InternalONotFoundApiError("some error"));
 
-    await submitForm("register", userAuthDummy);
+    await submitAuthForm("register", userAuthDummy);
 
     expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/500");

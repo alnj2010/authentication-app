@@ -8,6 +8,9 @@ export const emptyFieldMsg: ClientErrorMsg = (field: string) =>
 export const lessThan4CharsFieldMsg: ClientErrorMsg = (field: string) =>
   `${field} must have at least (4) characters`;
 
+export const invalidImageFormatMsg: ClientErrorMsg = (field: string) =>
+  `${field} must be a valid image format (png, jpeg, jpg, svg)`;
+
 export const nullValueMsg: ClientErrorMsg = (field: string) => "";
 
 export function validate(
@@ -40,6 +43,23 @@ export function validateScheme<T>(scheme: ValidationScheme): T {
   return rawobj as T;
 }
 
+export const photoFormatValidator: Validator = (value: File) => {
+  const allowedExtensions = /(\.png|\.jpeg|\.jpg|\.svg)$/i;
+  if (!value || !allowedExtensions.exec(value.name)) {
+    return invalidImageFormatMsg;
+  }
+
+  return nullValueMsg;
+};
+
+export const phoneNumberValidator: Validator = (value) => {
+  if (isNaN(Number(value))) {
+    return invalidFieldMsg;
+  }
+
+  return nullValueMsg;
+};
+
 export const emailPatternValidator: Validator = (value) => {
   const emailRegex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
 
@@ -59,7 +79,7 @@ export const min4CharsValidator: Validator = (value) => {
 
 export const nonEmptyValidator: Validator = (value) => {
   if (!value) {
-    return lessThan4CharsFieldMsg;
+    return emptyFieldMsg;
   }
   return nullValueMsg;
 };

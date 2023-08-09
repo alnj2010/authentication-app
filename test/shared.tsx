@@ -4,7 +4,7 @@ import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 
-export async function submitForm(
+export async function submitAuthForm(
   typeAuth: "login" | "register",
   user?: AuthInfo
 ) {

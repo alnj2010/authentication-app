@@ -7,11 +7,12 @@ import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 import { userAuthDummy } from "../dummies";
 import { Api } from "@/lib/api";
-import { CustomApiError } from "@/domain/errors/custom-api-error";
+import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 
-import { submitForm } from "../shared";
+import { submitAuthForm } from "../shared";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
 import { LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
+import { ApiError } from "@/domain/errors/api-error";
 
 jest.mock("@/lib/api");
 
@@ -57,7 +58,7 @@ describe("Login page", () => {
   });
 
   it("When login form is submited but there is a invalid email should show a messages error", async () => {
-    await submitForm("login", {
+    await submitAuthForm("login", {
       password: userAuthDummy.password,
       email: "invalidemail",
     });
@@ -70,7 +71,10 @@ describe("Login page", () => {
   });
 
   it("When login form is submited but there is a with less than (4) characters should show a messages error", async () => {
-    await submitForm("login", { password: "p", email: userAuthDummy.email });
+    await submitAuthForm("login", {
+      password: "p",
+      email: userAuthDummy.email,
+    });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
@@ -80,11 +84,10 @@ describe("Login page", () => {
   });
 
   it("When login form is submited with correct data but invalid credentials should show error messages", async () => {
-    jest.spyOn(Api, "post").mockResolvedValue({
-      ok: false,
-      data: { code: 401, error: LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS },
-    });
-    await submitForm("login", userAuthDummy);
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new ApiError(LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS));
+    await submitAuthForm("login", userAuthDummy);
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
@@ -95,21 +98,20 @@ describe("Login page", () => {
   });
 
   it("When login form is submited with valid data should go to profile page", async () => {
-    jest.spyOn(Api, "post").mockResolvedValue({
-      ok: true,
-      data: { code: 200 },
-    });
+    jest.spyOn(Api, "post").mockResolvedValue(null);
 
-    await submitForm("login", userAuthDummy);
+    await submitAuthForm("login", userAuthDummy);
 
     expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
   it("When login form is submited with valid data but a error service occurred should go to error page", async () => {
-    jest.spyOn(Api, "post").mockRejectedValue(new CustomApiError("some error"));
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new InternalONotFoundApiError("some error"));
 
-    await submitForm("login", userAuthDummy);
+    await submitAuthForm("login", userAuthDummy);
 
     expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
     expect(mockRouter.asPath).toEqual("/500");

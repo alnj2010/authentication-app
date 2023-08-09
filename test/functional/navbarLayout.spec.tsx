@@ -7,7 +7,13 @@ import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 
 jest.mock("next/router", () => require("next-router-mock"));
-
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: (props: any) => {
+    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+    return <img {...props} />;
+  },
+}));
 describe("Navbar layout", () => {
   beforeEach(() => {
     render(

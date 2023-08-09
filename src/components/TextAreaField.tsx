@@ -1,3 +1,4 @@
+import { ChangeEventHandler } from "react";
 import Typography from "./Typography";
 
 type Props = {
@@ -5,6 +6,7 @@ type Props = {
   id: string;
   placeholder: string;
   value?: string;
+  onChange: ChangeEventHandler<HTMLTextAreaElement>;
 };
 
 export default function TextAreaField({
@@ -12,6 +14,7 @@ export default function TextAreaField({
   placeholder,
   title,
   value = "",
+  onChange,
 }: Props) {
   return (
     <>
@@ -21,7 +24,7 @@ export default function TextAreaField({
         </Typography>
       </label>
       <textarea
-        readOnly
+        onChange={onChange}
         value={value}
         className="border-gray border-solid border rounded-lg h-24 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
         name={id}

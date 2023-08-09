@@ -1,11 +1,11 @@
 import AuthLayout from "@/layouts/authLayout";
 import Typography from "@/components/Typography";
-import { register } from "@/services/register-service";
+import { registerService } from "@/services/register-service";
 
 export default function Register() {
   return (
     <AuthLayout
-      authService={register}
+      authService={registerService}
       id="register"
       sectionTitle="Join thousands of learners from around the world"
       submitButtonText="Start coding now"
