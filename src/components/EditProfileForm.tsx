@@ -69,7 +69,7 @@ export default function EditProfileForm({
         validators: [],
       },
       bio: {
-        value: name,
+        value: bio,
         validators: [],
       },
       phone: {
