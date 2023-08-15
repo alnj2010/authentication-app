@@ -5,7 +5,6 @@ import { CustomResponse } from "@/domain/types";
 export const Api = new (class {
   private async request(url: string, config?: RequestInit): Promise<any> {
     const response: Response = await fetch(url, config);
-
     try {
       const payload: CustomResponse<any> = await response.json();
       if (response.ok) {
@@ -14,7 +13,8 @@ export const Api = new (class {
         throw new ApiError(payload.error);
       }
     } catch (error) {
-      throw new InternalONotFoundApiError(response.statusText);
+      if (error instanceof ApiError) throw error;
+      else throw new InternalONotFoundApiError(response.statusText);
     }
   }
 
