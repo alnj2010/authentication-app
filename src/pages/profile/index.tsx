@@ -1,23 +1,56 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import Button from "@/components/Button";
 import Image from "next/image";
 
-import { ReactElement } from "react";
 import Typography from "@/components/Typography";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
-import { UserResponse } from "@/domain/types";
+import { UserEntity } from "@/domain/types";
 import { userDummy } from "../../../test/dummies";
 import NavbarLayout from "@/layouts/navbarLayout";
 import ContentLayout from "@/layouts/contentLayout";
 import SectionInfo from "@/components/SectionInfo";
 import WelcomeProfilePage from "@/components/WelcomeProfilePage";
+import TokenUtil from "@/lib/token";
+import CookieUtil from "@/lib/cookie";
+import UserRepository from "@/repositories/user-repository";
+import { SECRET_PASSWORD, UNDEFINED_PHOTO } from "@/domain/constants";
 
-type Props = {
-  user: UserResponse;
+export const getServerSideProps = async function ({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}) {
+  try {
+    const token = CookieUtil.getAccessToken(req, res);
+    const id = TokenUtil.verifyTokenAndGetSub(token);
+    const user = await UserRepository.getUserById(id);
+
+    user.password = SECRET_PASSWORD;
+    user.photo =
+      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
+
+    return {
+      props: { user },
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 };
 
-export default function Profile({ user = userDummy }: Props) {
-  const userKeys = Object.keys(user);
+type Props = {
+  user: UserEntity;
+};
+
+export default function Profile({ user }: Props) {
+  const userKeys = ["photo", "name", "bio", "phone", "email", "password"];
   return (
     <NavbarLayout user={user}>
       <>
@@ -61,7 +94,7 @@ export default function Profile({ user = userDummy }: Props) {
                       className="truncate sm:text-lg sm:font-medium dark:text-gray-secondary"
                       dataTestid={`${title.toLowerCase()}-label`}
                     >
-                      {user[title as keyof UserResponse]}
+                      {user[title as keyof UserEntity]}
                     </Typography>
                   )}
                 </ProfileInfoItem>

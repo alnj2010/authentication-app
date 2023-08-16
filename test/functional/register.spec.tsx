@@ -11,6 +11,8 @@ import { submitAuthForm } from "../shared";
 import { Api } from "@/lib/api";
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
+import { ApiError } from "@/domain/errors/api-error";
+import { REGISTER_SERVICE_ERROR_EXISTING_USER } from "@/domain/constants";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
@@ -67,7 +69,10 @@ describe("Register page", () => {
   });
 
   it("When register form is submited but there is a with less than (4) characters should show a messages error", async () => {
-    await submitAuthForm("register", { password: "p", email: userAuthDummy.email });
+    await submitAuthForm("register", {
+      password: "p",
+      email: userAuthDummy.email,
+    });
 
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
@@ -88,8 +93,24 @@ describe("Register page", () => {
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
+  it("When register form is submited with existing user should show error messages", async () => {
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new ApiError(REGISTER_SERVICE_ERROR_EXISTING_USER));
+    await submitAuthForm("register", userAuthDummy);
+
+    const errorMessages = screen.getByTestId("error-messages");
+    expect(errorMessages.childElementCount).toBe(1);
+    expect(errorMessages.firstChild?.textContent).toContain(
+      REGISTER_SERVICE_ERROR_EXISTING_USER
+    );
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+  });
+
   it("When register form is submited with valid data but a error service occurred should go to error page", async () => {
-    jest.spyOn(Api, "post").mockRejectedValue(new InternalONotFoundApiError("some error"));
+    jest
+      .spyOn(Api, "post")
+      .mockRejectedValue(new InternalONotFoundApiError("some error"));
 
     await submitAuthForm("register", userAuthDummy);
 

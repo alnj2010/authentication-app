@@ -3,13 +3,14 @@ export interface AuthInfo {
   password: string;
 }
 
-export interface User extends AuthInfo {
+interface User extends AuthInfo {
+  id: string;
   bio: string;
   name: string;
   phone: string;
 }
 
-export interface UserResponse extends User {
+export interface UserEntity extends User {
   photo: string;
 }
 

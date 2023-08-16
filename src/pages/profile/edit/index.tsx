@@ -1,19 +1,54 @@
-import { UserResponse } from "@/domain/types";
+import { NextApiRequest, NextApiResponse } from "next";
+
+import { UserEntity } from "@/domain/types";
 import NavbarLayout from "@/layouts/navbarLayout";
 import ContentLayout from "@/layouts/contentLayout";
 import SectionInfo from "@/components/SectionInfo";
 
-import { userDummy } from "../../../../test/dummies";
 import BackLink from "@/components/BackLink";
 
 import EditProfileForm from "@/components/EditProfileForm";
 import { updateUserService } from "@/services/update-service";
 
+import TokenUtil from "@/lib/token";
+import CookieUtil from "@/lib/cookie";
+import UserRepository from "@/repositories/user-repository";
+import { SECRET_PASSWORD, UNDEFINED_PHOTO } from "@/domain/constants";
+
 type Props = {
-  user: UserResponse;
+  user: UserEntity;
 };
 
-export default function EditProfile({ user = userDummy }: Props) {
+export const getServerSideProps = async function ({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}) {
+  try {
+    const token = CookieUtil.getAccessToken(req, res);
+    const id = TokenUtil.verifyTokenAndGetSub(token);
+    const user = await UserRepository.getUserById(id);
+
+    user.password = SECRET_PASSWORD;
+    user.photo =
+      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
+
+    return {
+      props: { user },
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+};
+
+export default function EditProfile({ user }: Props) {
   return (
     <NavbarLayout user={user}>
       <>

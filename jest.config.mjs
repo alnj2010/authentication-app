@@ -19,6 +19,7 @@ const config = {
   },
   coveragePathIgnorePatterns: [
     "<rootDir>/src/lib",
+    "<rootDir>/src/repositories",
     "<rootDir>/src/pages/_app.tsx",
     "<rootDir>/src/pages/_document.tsx",
     "<rootDir>/src/pages/500.tsx"

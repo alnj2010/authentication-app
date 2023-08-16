@@ -3,7 +3,7 @@ import Typography from "./Typography";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { UserResponse } from "@/domain/types";
+import { UserEntity } from "@/domain/types";
 
 function MenuItem({
   title,
@@ -35,7 +35,7 @@ function MenuItem({
 }
 
 type Props = {
-  user: UserResponse;
+  user: UserEntity;
 };
 
 export default function Dropdown({ user }: Props) {

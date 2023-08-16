@@ -1,4 +1,4 @@
-import { UserResponse, UserSubmit, ValidationScheme } from "@/domain/types";
+import { UserEntity, UserSubmit, ValidationScheme } from "@/domain/types";
 
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
@@ -20,7 +20,7 @@ import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found
 import { useTextField } from "@/hooks/useTextFile";
 
 type Props = {
-  initial: UserResponse;
+  initial: UserEntity;
   updateProfileService: (user: UserSubmit) => Promise<void>;
 };
 
