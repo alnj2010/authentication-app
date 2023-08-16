@@ -50,7 +50,7 @@ type Props = {
 };
 
 export default function Profile({ user }: Props) {
-  const userKeys = Object.keys(user);
+  const userKeys = ["photo", "name", "bio", "phone", "email", "password"];
   return (
     <NavbarLayout user={user}>
       <>
