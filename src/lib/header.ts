@@ -34,6 +34,12 @@ class HeaderUtil {
       throw new ApiError(400, SERVICE_ERROR_INVALID_REQUEST);
     }
   }
+
+  serializeAuthBasicHeader(credentials: AuthInfo): string {
+    return `Basic ${Base64Util.encode(
+      `${credentials.email}:${credentials.password}`
+    )}`;
+  }
 }
 
 const util = new HeaderUtil();

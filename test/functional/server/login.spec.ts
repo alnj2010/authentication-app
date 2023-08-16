@@ -3,6 +3,7 @@ import handler from "@/pages/api/login";
 import { userDummy } from "../../dummies";
 import UserRepository from "@/repositories/user-repository";
 import Base64Util from "@/lib/base64";
+import HeaderUtil from "@/lib/header";
 import CryptoUtil from "@/lib/crypto";
 import TokenUtil from "@/lib/token";
 
@@ -89,9 +90,10 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: `Basic ${Base64Util.encode(
-          `invalidemail:${userDummy.password}`
-        )}`,
+        authorization: HeaderUtil.serializeAuthBasicHeader({
+          email: "invalidemail",
+          password: userDummy.password,
+        }),
       },
     });
 
@@ -104,7 +106,10 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: `Basic ${Base64Util.encode(`${userDummy.email}:*`)}`,
+        authorization: HeaderUtil.serializeAuthBasicHeader({
+          email: userDummy.email,
+          password: "*",
+        }),
       },
     });
 
@@ -119,9 +124,7 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: `Basic ${Base64Util.encode(
-          `${userDummy.email}:${userDummy.password}`
-        )}`,
+        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
       },
     });
 
@@ -137,9 +140,7 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: `Basic ${Base64Util.encode(
-          `${userDummy.email}:${userDummy.password}`
-        )}`,
+        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
       },
     });
 
@@ -156,9 +157,7 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: `Basic ${Base64Util.encode(
-          `${userDummy.email}:${userDummy.password}`
-        )}`,
+        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
       },
     });
 

@@ -1,6 +1,6 @@
 import {
   SERVICE_ERROR_INTERNAL,
-  SERVICE_ERROR_UNAUTHORIZED_USER,
+  SERVICE_ERROR_INVALID_CREDENTIALS,
 } from "@/domain/constants";
 import { CustomResponse } from "@/domain/types";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -24,13 +24,13 @@ export default async function handler(
         credentials.email
       );
       if (!userExists) {
-        throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED_USER);
+        throw new ApiError(401, SERVICE_ERROR_INVALID_CREDENTIALS);
       }
 
       const user = await UserRepository.getUserByEmail(credentials.email);
 
       if (CryptoUtil.hashPassword(credentials.password) !== user.password) {
-        throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED_USER);
+        throw new ApiError(401, SERVICE_ERROR_INVALID_CREDENTIALS);
       }
       const token = TokenUtil.createToken(user.id);
 

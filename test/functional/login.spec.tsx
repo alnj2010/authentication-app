@@ -11,7 +11,8 @@ import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found
 
 import { submitAuthForm } from "../shared";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
-import { LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
+import HeaderUtil from "@/lib/header";
+import { SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
 import { ApiError } from "@/domain/errors/api-error";
 
 jest.mock("@/lib/api");
@@ -86,15 +87,19 @@ describe("Login page", () => {
   it("When login form is submited with correct data but invalid credentials should show error messages", async () => {
     jest
       .spyOn(Api, "post")
-      .mockRejectedValue(new ApiError(LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS));
+      .mockRejectedValue(new ApiError(SERVICE_ERROR_INVALID_CREDENTIALS));
     await submitAuthForm("login", userAuthDummy);
 
+    jest.spyOn(HeaderUtil, "serializeAuthBasicHeader");
+    
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
-      LOGIN_SERVICE_ERROR_INVALID_CREDENTIALS
+      SERVICE_ERROR_INVALID_CREDENTIALS
     );
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect(
+      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+    ).toContain("Basic");
   });
 
   it("When login form is submited with valid data should go to profile page", async () => {
@@ -102,7 +107,9 @@ describe("Login page", () => {
 
     await submitAuthForm("login", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect(
+      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+    ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/profile");
   });
 
@@ -113,7 +120,9 @@ describe("Login page", () => {
 
     await submitAuthForm("login", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect(
+      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+    ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/500");
   });
 });
