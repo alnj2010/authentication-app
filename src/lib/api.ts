@@ -18,14 +18,14 @@ export const Api = new (class {
     }
   }
 
-  async get(url: string, config?: RequestInit): Promise<any> {
+  async get(url: string, config: RequestInit = {}): Promise<any> {
     return this.request(url, config);
   }
 
   async post(
     url: string,
     body: Object | null,
-    config?: RequestInit
+    config: RequestInit = {}
   ): Promise<any> {
     return this.request(url, {
       method: "POST",
@@ -34,7 +34,11 @@ export const Api = new (class {
     });
   }
 
-  async put(url: string, body: FormData, config?: RequestInit): Promise<any> {
+  async put(
+    url: string,
+    body: FormData,
+    config: RequestInit = {}
+  ): Promise<any> {
     return this.request(url, {
       method: "PUT",
       body,

@@ -6,6 +6,7 @@ import { userDummy } from "../dummies";
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 
+jest.mock("@/lib/api");
 jest.mock("next/router", () => require("next-router-mock"));
 jest.mock("next/image", () => ({
   __esModule: true,

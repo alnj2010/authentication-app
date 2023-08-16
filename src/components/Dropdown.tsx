@@ -1,35 +1,36 @@
 import { Menu, Transition } from "@headlessui/react";
 import Typography from "./Typography";
 import Image from "next/image";
-import Link from "next/link";
 import { Fragment } from "react";
 import { UserEntity } from "@/domain/types";
+import { useRouter } from "next/router";
+import { logoutService } from "@/services/logout-service";
 
 function MenuItem({
   title,
-  redirect,
+  handleMenuItem,
   color = "text-black-light",
   icon,
   "data-testid": dataTestid,
 }: {
   color?: "text-black-light" | "text-red";
   title: string;
-  redirect: string;
+  handleMenuItem: () => void;
   icon: string;
   "data-testid": string;
 }) {
   return (
     <Menu.Item as="div">
-      <Link
+      <div
         className="flex items-center px-3 h-10 ui-active:bg-[#F2F2F2] rounded-lg"
-        href={redirect}
+        onClick={handleMenuItem}
         data-testid={dataTestid}
       >
         <Image src={icon} alt="" width={16} height={16} />
         <Typography variant="dropdown2" color={color} className="pl-2">
           {title}
         </Typography>
-      </Link>
+      </div>
     </Menu.Item>
   );
 }
@@ -39,6 +40,8 @@ type Props = {
 };
 
 export default function Dropdown({ user }: Props) {
+  const router = useRouter();
+
   return (
     <div className="relative">
       <Menu as="div" className="absolute right-0 w-44">
@@ -86,14 +89,23 @@ export default function Dropdown({ user }: Props) {
           >
             <MenuItem
               title="My Profile"
-              redirect="/profile"
+              handleMenuItem={() => {
+                router.replace("/profile");
+              }}
               icon="/user-circle.svg"
               data-testid="item-profile-link"
             />
             <div className="h-[1px] bg-gray-secondary my-2"></div>
             <MenuItem
               title="Logout"
-              redirect="/"
+              handleMenuItem={async () => {
+                try {
+                  await logoutService();
+                  router.replace("/");
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
               color="text-red"
               icon="/logout.svg"
               data-testid="item-logout-link"
