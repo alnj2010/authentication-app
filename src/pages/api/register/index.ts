@@ -1,4 +1,7 @@
-import { REGISTER_SERVICE_ERROR_EXISTING_USER, SERVICE_ERROR_INTERNAL } from "@/domain/constants";
+import {
+  REGISTER_SERVICE_ERROR_EXISTING_USER,
+  SERVICE_ERROR_INTERNAL,
+} from "@/domain/constants";
 import { AuthInfo, CustomResponse } from "@/domain/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import UserRepository from "@/repositories/user-repository";
@@ -11,6 +14,7 @@ import {
   validateScheme,
 } from "@/lib/validator";
 import { FormValidationError } from "@/domain/errors/form-validation-error";
+import { ApiError } from "next/dist/server/api-utils";
 
 export default async function handler(
   req: NextApiRequest,
@@ -59,7 +63,13 @@ export default async function handler(
           error: error.errorMsgs.join(" "),
           data: null,
         });
-      else
+      else if (error instanceof ApiError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          error: error.message,
+          data: null,
+        });
+      } else
         res.status(500).json({
           code: 500,
           error: SERVICE_ERROR_INTERNAL,

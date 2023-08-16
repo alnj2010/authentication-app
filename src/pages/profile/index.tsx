@@ -14,6 +14,7 @@ import WelcomeProfilePage from "@/components/WelcomeProfilePage";
 import TokenUtil from "@/lib/token";
 import CookieUtil from "@/lib/cookie";
 import UserRepository from "@/repositories/user-repository";
+import { SECRET_PASSWORD, UNDEFINED_PHOTO } from "@/domain/constants";
 
 export const getServerSideProps = async function ({
   req,
@@ -26,7 +27,11 @@ export const getServerSideProps = async function ({
     const token = CookieUtil.getAccessToken(req, res);
     const id = TokenUtil.verifyTokenAndGetSub(token);
     const user = await UserRepository.getUserById(id);
-    
+
+    user.password = SECRET_PASSWORD;
+    user.photo =
+      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
+
     return {
       props: { user },
     };

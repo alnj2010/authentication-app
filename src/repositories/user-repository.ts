@@ -1,8 +1,7 @@
-import { SECRET_PASSWORD, UNDEFINED_PHOTO } from "@/domain/constants";
-import { RepositoryError } from "@/domain/errors/repository-error";
 import { AuthInfo, UserEntity } from "@/domain/types";
 import { sql } from "@vercel/postgres";
-import { createHash } from "crypto";
+import CryptoUtil from "@/lib/crypto";
+import { ApiError } from "next/dist/server/api-utils";
 
 class UserRepository {
   constructor() {}
@@ -13,12 +12,9 @@ class UserRepository {
     } = await sql`SELECT * FROM users WHERE users.email = ${email};`;
 
     if (!user) {
-      throw new RepositoryError("Email not found");
+      throw new ApiError(404, "Email not found");
     }
 
-    user.password = SECRET_PASSWORD;
-    user.photo =
-      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
     return user as UserEntity;
   }
 
@@ -32,9 +28,7 @@ class UserRepository {
   }
 
   async createUserByCredentials(credentials: AuthInfo): Promise<void> {
-    const hashedPassword = createHash("sha256")
-      .update(credentials.password)
-      .digest("hex");
+    const hashedPassword = CryptoUtil.hashPassword(credentials.password);
 
     await sql`INSERT INTO users (email, password) VALUES (${credentials.email}, ${hashedPassword});`;
   }
@@ -45,12 +39,9 @@ class UserRepository {
     } = await sql`SELECT * FROM users WHERE users.id = ${id};`;
 
     if (!user) {
-      throw new RepositoryError("id not found");
+      throw new ApiError(404, "id not found");
     }
 
-    user.password = SECRET_PASSWORD;
-    user.photo =
-      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
     return user as UserEntity;
   }
 }

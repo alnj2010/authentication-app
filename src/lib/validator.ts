@@ -1,5 +1,7 @@
 import { FormValidationError } from "@/domain/errors/form-validation-error";
 import { ClientErrorMsg, ValidationScheme, Validator } from "@/domain/types";
+import Base64Util from "@/lib/base64";
+import { error } from "console";
 
 export const invalidFieldMsg: ClientErrorMsg = (field: string) =>
   `${field} is invalid`;
@@ -17,12 +19,14 @@ export function validate(
   fieldName: string,
   value: string,
   validators: Validator[]
-): Array<string> {
+): void {
   const errMsgs = validators
     .map((validator) => validator(value)(fieldName))
     .filter((item) => item);
 
-  return errMsgs;
+  if (errMsgs.length) {
+    throw new FormValidationError(errMsgs);
+  }
 }
 
 export function validateScheme<T>(scheme: ValidationScheme): T {
@@ -30,9 +34,11 @@ export function validateScheme<T>(scheme: ValidationScheme): T {
   const rawobj: any = {};
 
   for (const key in scheme) {
-    errors = errors.concat(
-      validate(key, scheme[key].value, scheme[key].validators)
-    );
+    try {
+      validate(key, scheme[key].value, scheme[key].validators);
+    } catch (error) {
+      errors = errors.concat((error as FormValidationError).errorMsgs);
+    }
     rawobj[key] = scheme[key].value;
   }
 
@@ -73,6 +79,18 @@ export const emailPatternValidator: Validator = (value) => {
 export const min4CharsValidator: Validator = (value) => {
   if (!value || value.length < 4) {
     return lessThan4CharsFieldMsg;
+  }
+  return nullValueMsg;
+};
+
+export const authBasicValidator: Validator = (value) => {
+  const params = value ? value.split(" ") : [];
+  if (
+    params.length < 2 ||
+    params[0] !== "Basic" ||
+    Base64Util.decode(params[1]).split(":").length < 2
+  ) {
+    return invalidFieldMsg;
   }
   return nullValueMsg;
 };

@@ -13,7 +13,7 @@ import { updateUserService } from "@/services/update-service";
 import TokenUtil from "@/lib/token";
 import CookieUtil from "@/lib/cookie";
 import UserRepository from "@/repositories/user-repository";
-
+import { SECRET_PASSWORD, UNDEFINED_PHOTO } from "@/domain/constants";
 
 type Props = {
   user: UserEntity;
@@ -30,6 +30,10 @@ export const getServerSideProps = async function ({
     const token = CookieUtil.getAccessToken(req, res);
     const id = TokenUtil.verifyTokenAndGetSub(token);
     const user = await UserRepository.getUserById(id);
+
+    user.password = SECRET_PASSWORD;
+    user.photo =
+      !user.photo || user.photo === "" ? UNDEFINED_PHOTO : user.photo;
 
     return {
       props: { user },
