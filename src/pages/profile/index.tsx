@@ -6,7 +6,6 @@ import Image from "next/image";
 import Typography from "@/components/Typography";
 import ProfileInfoItem from "@/components/ProfileInfoItem";
 import { UserEntity } from "@/domain/types";
-import { userDummy } from "../../../test/dummies";
 import NavbarLayout from "@/layouts/navbarLayout";
 import ContentLayout from "@/layouts/contentLayout";
 import SectionInfo from "@/components/SectionInfo";

@@ -22,6 +22,16 @@ class CookieUtil {
 
     return accessToken;
   }
+
+  removeAccessToken(): string {
+    return serialize("access_token", "deleted", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+      path: "/",
+      maxAge: 0,
+    });
+  }
 }
 
 const util = new CookieUtil();
