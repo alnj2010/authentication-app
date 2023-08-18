@@ -54,7 +54,7 @@ class UserRepository {
           password=${CryptoUtil.hashPassword(user.password)},
           name=${user.name}, 
           bio=${user.bio},
-          phone=${user.phone},
+          phone=${user.phone}
       WHERE id=${user.id};`;
     } else if (user.photo) {
       await sql`UPDATE users
@@ -62,7 +62,7 @@ class UserRepository {
           photo=${user.photo}, 
           name=${user.name}, 
           bio=${user.bio},
-          phone=${user.phone},
+          phone=${user.phone}
       WHERE id=${user.id};`;
     } else if (user.password) {
       await sql`UPDATE users
@@ -70,14 +70,14 @@ class UserRepository {
           password=${CryptoUtil.hashPassword(user.password)},
           name=${user.name}, 
           bio=${user.bio},
-          phone=${user.phone},
+          phone=${user.phone}
       WHERE id=${user.id};`;
     } else {
       await sql`UPDATE users
       SET 
           name=${user.name}, 
           bio=${user.bio},
-          phone=${user.phone},
+          phone=${user.phone}
       WHERE id=${user.id};`;
     }
   }
