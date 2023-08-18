@@ -1,7 +1,8 @@
-import { AuthInfo, UserEntity } from "@/domain/types";
+import { AuthInfo, UserEntity, UserUpdateable } from "@/domain/types";
 import { sql } from "@vercel/postgres";
 import CryptoUtil from "@/lib/crypto";
 import { ApiError } from "next/dist/server/api-utils";
+import { SECRET_PASSWORD } from "@/domain/constants";
 
 class UserRepository {
   constructor() {}
@@ -43,6 +44,42 @@ class UserRepository {
     }
 
     return user as UserEntity;
+  }
+
+  async updateUser(user: UserUpdateable): Promise<void> {
+    if (user.photo && user.password !== SECRET_PASSWORD) {
+      await sql`UPDATE users
+      SET 
+          photo=${user.photo}, 
+          password=${CryptoUtil.hashPassword(user.password)},
+          name=${user.name}, 
+          bio=${user.bio},
+          phone=${user.phone},
+      WHERE id=${user.id};`;
+    } else if (user.photo) {
+      await sql`UPDATE users
+      SET 
+          photo=${user.photo}, 
+          name=${user.name}, 
+          bio=${user.bio},
+          phone=${user.phone},
+      WHERE id=${user.id};`;
+    } else if (user.password) {
+      await sql`UPDATE users
+      SET 
+          password=${CryptoUtil.hashPassword(user.password)},
+          name=${user.name}, 
+          bio=${user.bio},
+          phone=${user.phone},
+      WHERE id=${user.id};`;
+    } else {
+      await sql`UPDATE users
+      SET 
+          name=${user.name}, 
+          bio=${user.bio},
+          phone=${user.phone},
+      WHERE id=${user.id};`;
+    }
   }
 }
 

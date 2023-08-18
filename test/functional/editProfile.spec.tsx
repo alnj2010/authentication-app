@@ -22,7 +22,7 @@ import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found
 jest.mock("@/lib/api");
 jest.mock("next/router", () => require("next-router-mock"));
 
-const userPhotoDummy = new File([new Blob()], "photo.png", {
+export const userPhotoDummy = new File([new Blob()], "photo.png", {
   type: "image/*",
 });
 
@@ -41,7 +41,6 @@ export async function submitEditForm(user: UserSubmit) {
   const textFieldUserName = screen.getByTestId("textfield-edit-user-name");
   const textFieldUserBio = screen.getByTestId("textfield-edit-user-bio");
   const textFieldUserPhone = screen.getByTestId("textfield-edit-user-phone");
-  const textFieldUserEmail = screen.getByTestId("textfield-edit-user-email");
   const textFieldUserPassword = screen.getByTestId(
     "textfield-edit-user-password"
   );
@@ -56,9 +55,6 @@ export async function submitEditForm(user: UserSubmit) {
 
   await userEvent.clear(textFieldUserPhone);
   if (user.phone) await userEvent.type(textFieldUserPhone, user.phone);
-
-  await userEvent.clear(textFieldUserEmail);
-  if (user.email) await userEvent.type(textFieldUserEmail, user.email);
 
   await userEvent.clear(textFieldUserPassword);
   if (user.password) await userEvent.type(textFieldUserPassword, user.password);
@@ -78,12 +74,13 @@ describe("Edit Profile page", () => {
     screen.getByTestId("textfield-edit-user-name");
     screen.getByTestId("textfield-edit-user-bio");
     screen.getByTestId("textfield-edit-user-phone");
-    screen.getByTestId("textfield-edit-user-email");
+    const textFieldUserEmail = screen.getByTestId("textfield-edit-user-email");
     screen.getByTestId("textfield-edit-user-password");
 
     screen.getByTestId("back-link");
 
     const saveButton = screen.getByTestId("save-button");
+    expect(textFieldUserEmail.hasAttribute("readOnly")).toBeTruthy();
     expect(saveButton.hasAttribute("disabled")).toBeTruthy();
     expect(screen.queryByTestId("error-messages")).toBeNull();
   });
@@ -200,13 +197,6 @@ describe("Edit Profile page", () => {
     expect(textFieldUserEmail.value).toBe(userDummy.email);
   });
 
-  it("When email field has changed then save button is enabled", async () => {
-    render(<EditProfile user={userDummy} />);
-    const textFieldUserEmail = screen.getByTestId("textfield-edit-user-email");
-    await userEvent.type(textFieldUserEmail, "newEmail");
-    const saveButton = screen.getByTestId("save-button");
-    expect(saveButton.hasAttribute("disabled")).toBeFalsy();
-  });
 
   it("When password field has rendered then initial value is setted", async () => {
     render(<EditProfile user={userDummy} />);
@@ -224,33 +214,6 @@ describe("Edit Profile page", () => {
     await userEvent.type(textFieldUserPassword, "newPassword");
     const saveButton = screen.getByTestId("save-button");
     expect(saveButton.hasAttribute("disabled")).toBeFalsy();
-  });
-
-  it("When edit form is submited but there is a invalid email should show a messages error", async () => {
-    render(<EditProfile user={userDummy} />);
-
-    await submitEditForm({
-      ...userSubmitDummy,
-      email: "invalid",
-    });
-    const errorMessages = screen.getByTestId("error-messages");
-    expect(errorMessages.childElementCount).toBe(1);
-    expect(errorMessages.firstChild?.textContent).toContain(
-      invalidFieldMsg("email")
-    );
-  });
-
-  it("When edit form is submited but email is empty should show a messages error", async () => {
-    render(<EditProfile user={userDummy} />);
-
-    await submitEditForm({
-      ...userSubmitDummy,
-      email: "",
-    });
-
-    const errorMessages = screen.getByTestId("error-messages");
-    expect(errorMessages.childElementCount).toBe(2);
-    expect(errorMessages.textContent).toContain(emptyFieldMsg("email"));
   });
 
   it("When edit form is submited but there is a invalid password should show a messages error", async () => {
@@ -336,7 +299,6 @@ describe("Edit Profile page", () => {
     expect(received.name).toBe("new name");
     expect(received.bio).toBe(userSubmitDummy.bio);
     expect(received.phone).toBe(userSubmitDummy.phone);
-    expect(received.email).toBe(userSubmitDummy.email);
     expect(received.password).toBe(userSubmitDummy.password);
     expect(mockRouter.asPath).toEqual("/profile");
   });

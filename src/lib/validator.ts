@@ -1,7 +1,6 @@
 import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { ClientErrorMsg, ValidationScheme, Validator } from "@/domain/types";
+import { ClientErrorMsg, FileUploadeable, ValidationScheme, Validator } from "@/domain/types";
 import Base64Util from "@/lib/base64";
-import { error } from "console";
 
 export const invalidFieldMsg: ClientErrorMsg = (field: string) =>
   `${field} is invalid`;
@@ -49,7 +48,7 @@ export function validateScheme<T>(scheme: ValidationScheme): T {
   return rawobj as T;
 }
 
-export const photoFormatValidator: Validator = (value: File) => {
+export const photoNameExtensionValidator: Validator = (value: FileUploadeable) => {
   const allowedExtensions = /(\.png|\.jpeg|\.jpg|\.svg)$/i;
   if (!value || !allowedExtensions.exec(value.name)) {
     return invalidImageFormatMsg;
@@ -57,6 +56,7 @@ export const photoFormatValidator: Validator = (value: File) => {
 
   return nullValueMsg;
 };
+
 
 export const phoneNumberValidator: Validator = (value) => {
   if (isNaN(Number(value))) {
