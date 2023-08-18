@@ -64,7 +64,7 @@ class UserRepository {
           bio=${user.bio},
           phone=${user.phone}
       WHERE id=${user.id};`;
-    } else if (user.password) {
+    } else if (user.password !== SECRET_PASSWORD) {
       await sql`UPDATE users
       SET 
           password=${CryptoUtil.hashPassword(user.password)},
