@@ -24,7 +24,7 @@ export default function FileField({ id, title, value, onChange }: Props) {
         onChange={onChange}
       />
       <label
-        className="flex justify-start items-center w-52 cursor-pointer"
+        className="flex justify-start items-center w-fit cursor-pointer"
         htmlFor={id}
       >
         <div className="w-[72px] h-[72px] relative flex justify-center items-center">
