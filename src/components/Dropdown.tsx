@@ -51,6 +51,7 @@ export default function Dropdown({ user }: Props) {
         >
           <div className="hidden w-[32px] h-[32px] bg-black-light rounded-md mr-3 sm:flex sm:justify-center sm:items-center">
             <Image
+              className="max-h-full w-auto"
               src={user.photo}
               alt="user photo"
               width={32}
@@ -60,7 +61,7 @@ export default function Dropdown({ user }: Props) {
           </div>
           <Typography
             variant="dropdown1"
-            className="mr-3 dark:text-gray-secondary"
+            className="mr-3 dark:text-gray-secondary whitespace-nowrap"
             dataTestid="menu-user-name"
           >
             {user.name}

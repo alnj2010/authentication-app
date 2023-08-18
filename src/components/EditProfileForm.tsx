@@ -11,6 +11,7 @@ import {
   nonEmptyValidator,
   phoneNumberValidator,
   photoNameExtensionValidator,
+  photoSizeValidator,
   validateScheme,
 } from "@/lib/validator";
 import router from "next/router";
@@ -59,7 +60,9 @@ export default function EditProfileForm({
     const userSubmitScheme: ValidationScheme = {
       photo: {
         value: photo.file,
-        validators: photo.file ? [photoNameExtensionValidator] : [],
+        validators: photo.file
+          ? [photoNameExtensionValidator, photoSizeValidator]
+          : [],
       },
       name: {
         value: name,

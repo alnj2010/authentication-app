@@ -1,5 +1,10 @@
 import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { ClientErrorMsg, FileUploadeable, ValidationScheme, Validator } from "@/domain/types";
+import {
+  ClientErrorMsg,
+  FileUploadeable,
+  ValidationScheme,
+  Validator,
+} from "@/domain/types";
 import Base64Util from "@/lib/base64";
 
 export const invalidFieldMsg: ClientErrorMsg = (field: string) =>
@@ -11,6 +16,9 @@ export const lessThan4CharsFieldMsg: ClientErrorMsg = (field: string) =>
 
 export const invalidImageFormatMsg: ClientErrorMsg = (field: string) =>
   `${field} must be a valid image format (png, jpeg, jpg, svg)`;
+
+  export const invalidImageSizeMsg: ClientErrorMsg = (field: string) =>
+  `${field} must be less to 2mb`;
 
 export const nullValueMsg: ClientErrorMsg = (field: string) => "";
 
@@ -48,7 +56,9 @@ export function validateScheme<T>(scheme: ValidationScheme): T {
   return rawobj as T;
 }
 
-export const photoNameExtensionValidator: Validator = (value: FileUploadeable) => {
+export const photoNameExtensionValidator: Validator = (
+  value: FileUploadeable
+) => {
   const allowedExtensions = /(\.png|\.jpeg|\.jpg|\.svg)$/i;
   if (!value || !allowedExtensions.exec(value.name)) {
     return invalidImageFormatMsg;
@@ -57,6 +67,14 @@ export const photoNameExtensionValidator: Validator = (value: FileUploadeable) =
   return nullValueMsg;
 };
 
+export const photoSizeValidator: Validator = (value: FileUploadeable) => {
+  const sizeMb = Math.round(value.size / 1024);
+  if (sizeMb > 2048) {
+    return invalidImageSizeMsg;
+  }
+
+  return nullValueMsg;
+};
 
 export const phoneNumberValidator: Validator = (value) => {
   if (isNaN(Number(value))) {
