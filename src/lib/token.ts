@@ -2,8 +2,7 @@ import { SERVICE_ERROR_UNAUTHORIZED } from "@/domain/constants";
 import jwt from "jsonwebtoken";
 import { ApiError } from "next/dist/server/api-utils";
 
-const SECRET =
-  "este secreto tiene que ser almacenado en las variables de entorno del lado del servidor";
+const SECRET: string = process.env.SECRET_SIGN_PASSWORD ?? "secret undefined";
 
 class TokenUtil {
   constructor() {}
