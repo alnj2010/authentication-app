@@ -79,6 +79,7 @@ export default function Profile({ user }: Props) {
                   {title === "photo" ? (
                     <div className="flex justify-center items-center w-[72px] h-[72px] bg-black-light rounded-md ">
                       <Image
+                        className="max-h-full w-auto"
                         src={user.photo}
                         alt="profile photo"
                         width={72}

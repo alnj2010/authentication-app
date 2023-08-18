@@ -18,6 +18,7 @@ import {
   nonEmptyValidator,
   phoneNumberValidator,
   photoNameExtensionValidator,
+  photoSizeValidator,
   validateScheme,
 } from "@/lib/validator";
 import UserRepository from "@/repositories/user-repository";
@@ -43,7 +44,9 @@ export default async function handler(
       const userDtoScheme: ValidationScheme = {
         photo: {
           value: userDto.photo,
-          validators: userDto.photo ? [photoNameExtensionValidator] : [],
+          validators: userDto.photo
+            ? [photoNameExtensionValidator, photoSizeValidator]
+            : [],
         },
         phone: {
           value: userDto.phone,
