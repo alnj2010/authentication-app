@@ -11,6 +11,7 @@ export const userDummy = {
 };
 
 export const initialUserDummy = {
+  id: "1",
   photo: "/photo.png",
   bio: "",
   name: "",

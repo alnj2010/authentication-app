@@ -1,6 +1,8 @@
+import { SERVICE_ERROR_UNAUTHORIZED } from "@/domain/constants";
 import { serialize } from "cookie";
 import Cookies from "cookies";
 import { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
 
 class CookieUtil {
   constructor() {}
@@ -17,7 +19,7 @@ class CookieUtil {
     const cookies = new Cookies(req, res);
     const accessToken = cookies.get("access_token");
     if (!accessToken) {
-      throw Error("access token not found");
+      throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED);
     }
 
     return accessToken;

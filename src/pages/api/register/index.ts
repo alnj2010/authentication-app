@@ -2,7 +2,7 @@ import {
   REGISTER_SERVICE_ERROR_EXISTING_USER,
   SERVICE_ERROR_INTERNAL,
 } from "@/domain/constants";
-import { AuthInfo, CustomResponse } from "@/domain/types";
+import { CustomResponse } from "@/domain/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import UserRepository from "@/repositories/user-repository";
 import TokenUtil from "@/lib/token";

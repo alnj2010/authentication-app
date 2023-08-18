@@ -14,8 +14,20 @@ export interface UserEntity extends User {
   photo: string;
 }
 
-export interface UserSubmit extends User {
-  photo: File | null;
+interface UserBasicSubmitInfo {
+  bio: string;
+  name: string;
+  phone: string;
+  password: string;
+}
+
+export interface UserSubmit extends UserBasicSubmitInfo {
+  photo: File | FileUploadeable | null;
+}
+
+export interface UserUpdateable extends UserBasicSubmitInfo {
+  id: string;
+  photo: string | null;
 }
 
 export type LoginResponseDTO = any;
@@ -35,3 +47,10 @@ export type ValidationScheme = {
 };
 
 export type SocialProviders = "google" | "facebook" | "twitter" | "github";
+
+export type FileUploadeable = {
+  size: number;
+  mimetype: string;
+  name: string;
+  buffer: Buffer;
+};

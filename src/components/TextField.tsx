@@ -6,8 +6,9 @@ type Props = {
   id: string;
   type: "text" | "password";
   placeholder: string;
+  readOnly?: boolean;
   value?: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 export default function TextField({
@@ -17,6 +18,7 @@ export default function TextField({
   title,
   onChange,
   value = "",
+  readOnly = false,
 }: Props) {
   return (
     <>
@@ -26,6 +28,7 @@ export default function TextField({
         </Typography>
       </label>
       <input
+        readOnly={readOnly}
         onChange={onChange}
         className="border-gray border-solid border rounded-lg h-12 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
         type={type}

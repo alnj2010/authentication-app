@@ -7,11 +7,10 @@ import FileField from "@/components/FileField";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import {
-  emailPatternValidator,
   min4CharsValidator,
   nonEmptyValidator,
   phoneNumberValidator,
-  photoFormatValidator,
+  photoNameExtensionValidator,
   validateScheme,
 } from "@/lib/validator";
 import router from "next/router";
@@ -31,7 +30,6 @@ export default function EditProfileForm({
   const [name, nameHandler] = useTextField(initial.name);
   const [bio, bioHandler] = useTextField(initial.bio);
   const [phone, phoneHandler] = useTextField(initial.phone);
-  const [email, emailHandler] = useTextField(initial.email);
   const [password, passwordHandler] = useTextField(initial.password);
 
   const [errorMessages, setErrorMessages] = useState<Array<string>>([]);
@@ -52,7 +50,6 @@ export default function EditProfileForm({
     name !== initial.name ||
     phone !== initial.phone ||
     bio !== initial.bio ||
-    email !== initial.email ||
     password !== initial.password
   );
   const areThereErrors = !!errorMessages.length;
@@ -62,7 +59,7 @@ export default function EditProfileForm({
     const userSubmitScheme: ValidationScheme = {
       photo: {
         value: photo.file,
-        validators: photo.file ? [photoFormatValidator] : [],
+        validators: photo.file ? [photoNameExtensionValidator] : [],
       },
       name: {
         value: name,
@@ -75,10 +72,6 @@ export default function EditProfileForm({
       phone: {
         value: phone,
         validators: [phoneNumberValidator],
-      },
-      email: {
-        value: email,
-        validators: [nonEmptyValidator, emailPatternValidator],
       },
       password: {
         value: password,
@@ -142,12 +135,12 @@ export default function EditProfileForm({
 
       <div className="pb-6">
         <TextField
-          onChange={emailHandler}
           id="textfield-edit-user-email"
           type="text"
           placeholder="Enter your email..."
+          readOnly
           title="Email"
-          value={email}
+          value={initial.email}
         />
       </div>
 
