@@ -9,6 +9,7 @@ type Props = {
   placeholder: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
   value: string;
+  name: string;
 };
 
 export default function IconInput({
@@ -19,6 +20,7 @@ export default function IconInput({
   placeholder,
   onChange,
   value,
+  name = "",
 }: Props) {
   return (
     <>
@@ -31,6 +33,7 @@ export default function IconInput({
         </div>
 
         <input
+          name={name}
           autoComplete="off"
           onChange={onChange}
           value={value}

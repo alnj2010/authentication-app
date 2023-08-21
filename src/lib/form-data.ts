@@ -1,4 +1,4 @@
-import { UserSubmit } from "@/domain/types";
+import { UserServer } from "@/domain/types";
 import { NextApiRequest } from "next";
 import formidable from "formidable";
 import { ApiError } from "next/dist/server/api-utils";
@@ -8,13 +8,13 @@ import * as fs from "fs";
 class FormDataUtil {
   constructor() {}
 
-  async getUserAndPhotoByRequest(req: NextApiRequest): Promise<UserSubmit> {
+  async getUserAndPhotoByRequest(req: NextApiRequest): Promise<UserServer> {
     try {
       const form = formidable({});
 
       const [fields, files] = await form.parse(req);
-      
-      const user: UserSubmit = {
+
+      const user: UserServer = {
         name: fields.name[0],
         bio: fields.bio[0],
         phone: fields.phone[0],

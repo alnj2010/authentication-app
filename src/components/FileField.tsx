@@ -1,21 +1,36 @@
 import { ChangeEventHandler } from "react";
 import Typography from "./Typography";
 import Image from "next/image";
+import { UNDEFINED_PHOTO } from "@/domain/constants";
+import { FileUploadeable } from "@/domain/types";
 
 type Props = {
   title: string;
   id: string;
-  value: string;
+  value: string | File | null;
+  name: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export default function FileField({ id, title, value, onChange }: Props) {
+export default function FileField({
+  id,
+  name = "",
+  title,
+  value = UNDEFINED_PHOTO,
+  onChange,
+}: Props) {
+  let srcValue;
+  if (value) {
+    srcValue = typeof value == "string" ? value : URL.createObjectURL(value);
+  } else {
+    srcValue = UNDEFINED_PHOTO;
+  }
   return (
     <>
       <input
         multiple={false}
         type="file"
-        name={id}
+        name={name}
         id={id}
         data-testid={id}
         accept="image/*"
@@ -33,7 +48,7 @@ export default function FileField({ id, title, value, onChange }: Props) {
             className="max-h-full w-auto"
             width={72}
             height={72}
-            src={value}
+            src={srcValue}
             alt="profile photo"
           />
         </div>

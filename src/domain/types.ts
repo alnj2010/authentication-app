@@ -22,7 +22,11 @@ interface UserBasicSubmitInfo {
 }
 
 export interface UserSubmit extends UserBasicSubmitInfo {
-  photo: File | FileUploadeable | null;
+  photo: File | null;
+}
+
+export interface UserServer extends UserBasicSubmitInfo {
+  photo: FileUploadeable | null;
 }
 
 export interface UserUpdateable extends UserBasicSubmitInfo {
@@ -38,7 +42,7 @@ export type CustomResponse<TData> = {
   data: TData;
 };
 
-export type AuthService = (authInfo: AuthInfo) => void;
+export type AuthService = (authInfo: AuthInfo) => Promise<void>;
 export type ClientErrorMsg = (fieldName: string) => string;
 export type Validator = (value: any) => ClientErrorMsg;
 

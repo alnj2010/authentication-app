@@ -6,6 +6,7 @@ import {
   authBasicValidator,
   emailPatternValidator,
   min4CharsValidator,
+  nonEmptyValidator,
   validate,
 } from "./validator";
 import Base64Util from "@/lib/base64";
@@ -23,8 +24,8 @@ class HeaderUtil {
       const credentials = Base64Util.decode(base64Credentials);
 
       const [email, password] = credentials.split(":");
-      validate("email", email, [emailPatternValidator]);
-      validate("password", password, [min4CharsValidator]);
+      validate("email", email, [nonEmptyValidator, emailPatternValidator]);
+      validate("password", password, [nonEmptyValidator, min4CharsValidator]);
 
       return {
         email,

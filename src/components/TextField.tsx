@@ -8,6 +8,7 @@ type Props = {
   placeholder: string;
   readOnly?: boolean;
   value?: string;
+  name: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -18,6 +19,7 @@ export default function TextField({
   title,
   onChange,
   value = "",
+  name = "",
   readOnly = false,
 }: Props) {
   return (
@@ -32,7 +34,7 @@ export default function TextField({
         onChange={onChange}
         className="border-gray border-solid border rounded-lg h-12 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
         type={type}
-        name={id}
+        name={name}
         value={value}
         id={id}
         data-testid={id}

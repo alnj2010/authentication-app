@@ -1,10 +1,9 @@
-import { UserEntity, UserSubmit, ValidationScheme } from "@/domain/types";
+import { UserEntity, UserSubmit } from "@/domain/types";
 
 import Button from "@/components/Button";
 import TextField from "@/components/TextField";
 import TextAreaField from "@/components/TextAreaField";
 import FileField from "@/components/FileField";
-import { ChangeEvent, FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import {
   min4CharsValidator,
@@ -12,12 +11,9 @@ import {
   phoneNumberValidator,
   photoNameExtensionValidator,
   photoSizeValidator,
-  validateScheme,
 } from "@/lib/validator";
-import router from "next/router";
-import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
-import { useTextField } from "@/hooks/useTextFile";
+
+import { useForm } from "@/hooks/useForm";
 
 type Props = {
   initial: UserEntity;
@@ -28,116 +24,87 @@ export default function EditProfileForm({
   initial,
   updateProfileService,
 }: Props) {
-  const [name, nameHandler] = useTextField(initial.name);
-  const [bio, bioHandler] = useTextField(initial.bio);
-  const [phone, phoneHandler] = useTextField(initial.phone);
-  const [password, passwordHandler] = useTextField(initial.password);
-
-  const [errorMessages, setErrorMessages] = useState<Array<string>>([]);
-
-  const [photo, setPhoto] = useState<{ file: File | null; url: string }>({
-    file: null,
-    url: initial.photo,
+  const [
+    fields,
+    handleFields,
+    handleSubmit,
+    errorMessages,
+    isSubmitButtonDisabled,
+  ] = useForm<UserSubmit>(updateProfileService, {
+    photo: {
+      value: initial.photo,
+      validators: [photoNameExtensionValidator, photoSizeValidator],
+    },
+    name: {
+      value: initial.name,
+      validators: [],
+    },
+    bio: {
+      value: initial.bio,
+      validators: [],
+    },
+    phone: {
+      value: initial.phone,
+      validators: [phoneNumberValidator],
+    },
+    password: {
+      value: initial.password,
+      validators: [nonEmptyValidator, min4CharsValidator],
+    },
   });
-  const photoHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const files: FileList | null = e.target.files;
-    if (files && files.length) {
-      setPhoto({ file: files[0], url: URL.createObjectURL(files[0]) });
-    }
-  };
 
-  const isDisabled = !(
-    photo.url !== initial.photo ||
-    name !== initial.name ||
-    phone !== initial.phone ||
-    bio !== initial.bio ||
-    password !== initial.password
-  );
   const areThereErrors = !!errorMessages.length;
 
-  const handlerSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const userSubmitScheme: ValidationScheme = {
-      photo: {
-        value: photo.file,
-        validators: photo.file
-          ? [photoNameExtensionValidator, photoSizeValidator]
-          : [],
-      },
-      name: {
-        value: name,
-        validators: [],
-      },
-      bio: {
-        value: bio,
-        validators: [],
-      },
-      phone: {
-        value: phone,
-        validators: [phoneNumberValidator],
-      },
-      password: {
-        value: password,
-        validators: [nonEmptyValidator, min4CharsValidator],
-      },
-    };
-
-    try {
-      const userSubmit = validateScheme<UserSubmit>(userSubmitScheme);
-      await updateProfileService(userSubmit);
-      router.push("/profile");
-    } catch (error) {
-      if (error instanceof FormValidationError)
-        setErrorMessages(error.errorMsgs);
-      else if (error instanceof InternalONotFoundApiError) router.push("/500");
-    }
-  };
-
   return (
-    <form className="pb-11 max-w-md" onSubmit={handlerSubmit}>
+    <form className="pb-11 max-w-md" onSubmit={handleSubmit}>
       <div className="pb-8">
         <FileField
-          onChange={photoHandler}
+          onChange={handleFields}
+          name="photo"
           id="filefield-edit-user-photo"
           title="CHANGE PHOTO"
-          value={photo.url}
+          value={fields.photo}
         />
       </div>
 
       <div className="pb-6">
         <TextField
-          onChange={nameHandler}
+          onChange={handleFields}
+          name="name"
           id="textfield-edit-user-name"
           type="text"
           placeholder="Enter your name..."
           title="Name"
-          value={name}
+          value={fields.name}
         />
       </div>
 
       <div className="pb-6">
         <TextAreaField
-          onChange={bioHandler}
+          onChange={handleFields}
+          name="bio"
           id="textfield-edit-user-bio"
           placeholder="Enter your bio..."
           title="Bio"
-          value={bio}
+          value={fields.bio}
         />
       </div>
 
       <div className="pb-6">
         <TextField
-          onChange={phoneHandler}
+          name="phone"
+          onChange={handleFields}
           id="textfield-edit-user-phone"
           type="text"
           placeholder="Enter your phone..."
           title="Phone"
-          value={phone}
+          value={fields.phone}
         />
       </div>
 
       <div className="pb-6">
         <TextField
+          name="email"
           id="textfield-edit-user-email"
           type="text"
           placeholder="Enter your email..."
@@ -149,17 +116,18 @@ export default function EditProfileForm({
 
       <div className="pb-6">
         <TextField
-          onChange={passwordHandler}
+          name="password"
+          onChange={handleFields}
           id="textfield-edit-user-password"
           type="password"
           placeholder="Enter your password..."
           title="Password"
-          value={password}
+          value={fields.password}
         />
       </div>
 
       <div className="w-20">
-        <Button id="save-button" disabled={isDisabled}>
+        <Button id="save-button" disabled={isSubmitButtonDisabled}>
           Save
         </Button>
       </div>
