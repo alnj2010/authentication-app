@@ -1,7 +1,7 @@
 import {
   CustomResponse,
   FileUploadeable,
-  UserSubmit,
+  UserServer,
   UserUpdateable,
   ValidationScheme,
 } from "@/domain/types";
@@ -37,16 +37,14 @@ export default async function handler(
     try {
       const token = CookieUtil.getAccessToken(req, res);
       const id = TokenUtil.verifyTokenAndGetSub(token);
-      const userDto: UserSubmit = await FormDataUtil.getUserAndPhotoByRequest(
+      const userDto: UserServer = await FormDataUtil.getUserAndPhotoByRequest(
         req
       );
 
       const userDtoScheme: ValidationScheme = {
         photo: {
           value: userDto.photo,
-          validators: userDto.photo
-            ? [photoNameExtensionValidator, photoSizeValidator]
-            : [],
+          validators: [photoNameExtensionValidator, photoSizeValidator],
         },
         phone: {
           value: userDto.phone,

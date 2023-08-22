@@ -6,11 +6,13 @@ type Props = {
   id: string;
   placeholder: string;
   value?: string;
+  name: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
 };
 
 export default function TextAreaField({
   id,
+  name = "",
   placeholder,
   title,
   value = "",
@@ -27,7 +29,7 @@ export default function TextAreaField({
         onChange={onChange}
         value={value}
         className="border-gray border-solid border rounded-lg h-24 w-full px-[18px] py-[17px] placeholder-gray-light focus:outline-none focus:border-black-light focus:ring-2 focus:ring-black-light dark:text-gray-secondary dark:focus:ring-gray-light dark:bg-dark"
-        name={id}
+        name={name}
         id={id}
         data-testid={id}
         placeholder={placeholder}

@@ -1,20 +1,15 @@
 import IconInput from "@/components/IconInput";
 import Button from "@/components/Button";
-import { FormEvent, useState } from "react";
 import Typography from "@/components/Typography";
 import { AuthInfo, AuthService } from "@/domain/types";
-import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 
-import { useRouter } from "next/router";
 import {
   emailPatternValidator,
   min4CharsValidator,
   nonEmptyValidator,
-  validateScheme,
 } from "@/lib/validator";
-import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { ApiError } from "@/domain/errors/api-error";
-import { useTextField } from "@/hooks/useTextFile";
+
+import { useForm } from "@/hooks/useForm";
 
 type Props = {
   authService: AuthService;
@@ -27,49 +22,31 @@ export default function AuthForm({
   buttonTitle,
   buttonId,
 }: Props) {
-  const router = useRouter();
+  const [
+    fields,
+    handleFields,
+    handleSubmit,
+    errorMessages,
+    isSubmitButtonDisabled,
+  ] = useForm<AuthInfo>(authService, {
+    email: {
+      value: "",
+      validators: [nonEmptyValidator, emailPatternValidator],
+    },
+    password: {
+      value: "",
+      validators: [nonEmptyValidator, min4CharsValidator],
+    },
+  });
 
-  const [email, emailHandler] = useTextField("");
-  const [password, passwordHandler] = useTextField("");
-
-  const [errorMessages, setErrorMessages] = useState<Array<string>>([]);
-
-  const handlerSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const authInfoScheme = {
-      email: {
-        value: email,
-        validators: [nonEmptyValidator, emailPatternValidator],
-      },
-      password: {
-        value: password,
-        validators: [nonEmptyValidator, min4CharsValidator],
-      },
-    };
-
-    try {
-      const authInfo = validateScheme<AuthInfo>(authInfoScheme);
-
-      await authService(authInfo);
-      router.push("/profile");
-    } catch (error) {
-      if (error instanceof ApiError) setErrorMessages([error.message]);
-      else if (error instanceof FormValidationError)
-        setErrorMessages(error.errorMsgs);
-      else if (error instanceof InternalONotFoundApiError) router.push("/500");
-    }
-  };
-
-  const isDisabled = email && password ? false : true;
   const areThereErrors = !!errorMessages.length;
-
   return (
-    <form onSubmit={handlerSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="mb-3.5">
         <IconInput
-          onChange={emailHandler}
-          value={email}
+          onChange={handleFields}
+          name="email"
+          value={fields.email}
           id="textfield-user-email"
           iconSrc="/mail.svg"
           iconAlt="mail icon"
@@ -79,8 +56,9 @@ export default function AuthForm({
       </div>
       <div className="mb-6">
         <IconInput
-          onChange={passwordHandler}
-          value={password}
+          name="password"
+          onChange={handleFields}
+          value={fields.password}
           id="textfield-user-password"
           iconSrc="/lock.svg"
           iconAlt="lock icon"
@@ -88,7 +66,11 @@ export default function AuthForm({
           placeholder="Password"
         />
       </div>
-      <Button data-testid={buttonId} id={buttonId} disabled={isDisabled}>
+      <Button
+        data-testid={buttonId}
+        id={buttonId}
+        disabled={isSubmitButtonDisabled}
+      >
         {buttonTitle}
       </Button>
       {areThereErrors && (

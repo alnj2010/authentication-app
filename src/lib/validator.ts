@@ -17,7 +17,7 @@ export const lessThan4CharsFieldMsg: ClientErrorMsg = (field: string) =>
 export const invalidImageFormatMsg: ClientErrorMsg = (field: string) =>
   `${field} must be a valid image format (png, jpeg, jpg, svg)`;
 
-  export const invalidImageSizeMsg: ClientErrorMsg = (field: string) =>
+export const invalidImageSizeMsg: ClientErrorMsg = (field: string) =>
   `${field} must be less to 2mb`;
 
 export const nullValueMsg: ClientErrorMsg = (field: string) => "";
@@ -60,7 +60,7 @@ export const photoNameExtensionValidator: Validator = (
   value: FileUploadeable
 ) => {
   const allowedExtensions = /(\.png|\.jpeg|\.jpg|\.svg)$/i;
-  if (!value || !allowedExtensions.exec(value.name)) {
+  if (value && value.name && !allowedExtensions.exec(value.name)) {
     return invalidImageFormatMsg;
   }
 
@@ -68,8 +68,7 @@ export const photoNameExtensionValidator: Validator = (
 };
 
 export const photoSizeValidator: Validator = (value: FileUploadeable) => {
-  const sizeMb = Math.round(value.size / 1024);
-  if (sizeMb > 2048) {
+  if (value && value.size && Math.round(value.size / 1024) > 2048) {
     return invalidImageSizeMsg;
   }
 
@@ -77,7 +76,7 @@ export const photoSizeValidator: Validator = (value: FileUploadeable) => {
 };
 
 export const phoneNumberValidator: Validator = (value) => {
-  if (isNaN(Number(value))) {
+  if (value && isNaN(Number(value))) {
     return invalidFieldMsg;
   }
 
@@ -87,7 +86,7 @@ export const phoneNumberValidator: Validator = (value) => {
 export const emailPatternValidator: Validator = (value) => {
   const emailRegex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
 
-  if (!value || !emailRegex.test(value)) {
+  if (value && !emailRegex.test(value)) {
     return invalidFieldMsg;
   }
 
@@ -95,7 +94,7 @@ export const emailPatternValidator: Validator = (value) => {
 };
 
 export const min4CharsValidator: Validator = (value) => {
-  if (!value || value.length < 4) {
+  if (value && value.length < 4) {
     return lessThan4CharsFieldMsg;
   }
   return nullValueMsg;

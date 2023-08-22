@@ -217,6 +217,7 @@ describe("Edit Profile page", () => {
   });
 
   it("When edit form is submited but there is a invalid password should show a messages error", async () => {
+    const x=userDummy
     render(<EditProfile user={userDummy} />);
 
     await submitEditForm({
@@ -230,17 +231,16 @@ describe("Edit Profile page", () => {
     );
   });
 
-  it("When edit form is submited but password is empty should show a messages error", async () => {
+  it("When edit form is submited but password is empty then submit button stays disabled", async () => {
     render(<EditProfile user={userDummy} />);
 
     await submitEditForm({
       ...userSubmitDummy,
       password: "",
     });
+    const saveButton = screen.getByTestId("save-button");
+    expect(saveButton.hasAttribute("disabled")).toBeTruthy();
 
-    const errorMessages = screen.getByTestId("error-messages");
-    expect(errorMessages.childElementCount).toBe(2);
-    expect(errorMessages.textContent).toContain(emptyFieldMsg("password"));
   });
 
   it("When edit form is submited but there is a invalid phone should show a messages error", async () => {
