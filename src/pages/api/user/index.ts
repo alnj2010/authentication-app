@@ -35,7 +35,7 @@ export default async function handler(
 ) {
   if (req.method === "PUT") {
     try {
-      const token = CookieUtil.getAccessToken(req, res);
+      const token = CookieUtil.get("access_token", req, res);
       const id = TokenUtil.verifyTokenAndGetSub(token);
       const userDto: UserServer = await FormDataUtil.getUserAndPhotoByRequest(
         req

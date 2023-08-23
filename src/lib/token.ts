@@ -19,6 +19,14 @@ class TokenUtil {
       throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED);
     }
   }
+
+  decode(token: string): jwt.JwtPayload {
+    const payload = jwt.decode(token);
+    if (!payload) {
+      throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED);
+    }
+    return payload as jwt.JwtPayload;
+  }
 }
 
 const util = new TokenUtil();

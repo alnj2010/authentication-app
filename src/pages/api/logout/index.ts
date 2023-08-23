@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse<CustomResponse<any>>
 ) {
   if (req.method === "POST") {
-    const cookie = CookieUtil.removeAccessToken();
+    const cookie = CookieUtil.remove("access_token");
     res.setHeader("Set-Cookie", cookie);
     
     res.status(200).json({ code: 200, data: "Successfully Logout" });

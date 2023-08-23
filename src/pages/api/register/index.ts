@@ -51,7 +51,7 @@ export default async function handler(
 
         const token = TokenUtil.createToken(user.id);
 
-        const cookie = CookieUtil.serializeAccessToken(token);
+        const cookie = CookieUtil.serialize("access_token", token);
 
         res.setHeader("Set-Cookie", cookie);
         res.status(200).json({ code: 200, data: "Successfully Registration" });

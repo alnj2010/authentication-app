@@ -1,4 +1,9 @@
-import { AuthInfo, UserEntity, UserUpdateable } from "@/domain/types";
+import {
+  AuthInfo,
+  UserCreateable,
+  UserEntity,
+  UserUpdateable,
+} from "@/domain/types";
 import { sql } from "@vercel/postgres";
 import CryptoUtil from "@/lib/crypto";
 import { ApiError } from "next/dist/server/api-utils";
@@ -32,6 +37,12 @@ class UserRepository {
     const hashedPassword = CryptoUtil.hashPassword(credentials.password);
 
     await sql`INSERT INTO users (email, password) VALUES (${credentials.email}, ${hashedPassword});`;
+  }
+
+  async createUser(user: UserCreateable): Promise<void> {
+    const hashedPassword = CryptoUtil.hashPassword(user.password);
+
+    await sql`INSERT INTO users (name, bio, phone, photo, email, password) VALUES (${user.name}, ${user.bio}, ${user.phone}, ${user.photo}, ${user.email}, ${hashedPassword});`;
   }
 
   async getUserById(id: string): Promise<UserEntity> {
