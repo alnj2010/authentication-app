@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 type Props = {};
-const authProviders = [
+export const authProviders = [
   { id: "google", imgSrc: "/Google.svg" },
   { id: "facebook", imgSrc: "/Facebook.svg" },
   { id: "twitter", imgSrc: "/Twitter.svg" },

@@ -1,9 +1,8 @@
-import { SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
+import { GOOGLE_AUTH_URL, SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
 import { CustomResponse } from "@/domain/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import queryString from "query-string";
-
-const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+import QueryStringUtil from "@/lib/query-string";
+import EnvUtil from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,13 +18,12 @@ export default async function handler(
   }
 
   const scopes = ["openid", "email", "profile"];
-  const query = queryString.stringify({
+  const query = QueryStringUtil.stringify({
     response_type: "code",
-    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_id: EnvUtil.get("GOOGLE_CLIENT_ID"),
     scope: scopes.join(" "),
-    redirect_uri: process.env.GOOGLE_REDIRECT_CODE_URL,
+    redirect_uri: EnvUtil.get("GOOGLE_REDIRECT_CODE_URL"),
   });
 
- 
   res.redirect(302, `${GOOGLE_AUTH_URL}?${query}`);
 }
