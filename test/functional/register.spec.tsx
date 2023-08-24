@@ -90,7 +90,7 @@ describe("Register page", () => {
     await submitAuthForm("register", userAuthDummy);
 
     expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
-    expect(mockRouter.asPath).toEqual("/profile");
+    expect(mockRouter.asPath).toEqual("/profile/edit");
   });
 
   it("When register form is submited with existing user should show error messages", async () => {

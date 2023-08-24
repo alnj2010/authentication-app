@@ -64,6 +64,7 @@ export default function AuthLayout({
                 authService={authService}
                 buttonTitle={submitButtonText}
                 buttonId={`${id}-button`}
+                redirectTo={id === "login" ? "/profile" : "/profile/edit"}
               />
             </div>
 
