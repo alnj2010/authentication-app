@@ -1,11 +1,15 @@
 import { createMocks } from "node-mocks-http";
 import handler from "@/pages/api/login/google/code";
 import { CustomResponse } from "@/domain/types";
-import { GOOGLE_AUTH_URL, SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
+import {
+  SERVICE_ERROR_NOT_FOUND,
+  SERVICE_ERROR_UNAUTHORIZED,
+} from "@/domain/constants";
 import UserRepository from "@/repositories/user-repository";
 import TokenUtil from "@/lib/token";
 import GoogleAuthUtil from "@/lib/google-auth";
 import { userDummy } from "../../../dummies";
+import CookieUtil from "@/lib/cookie";
 
 jest.mock("@/repositories/user-repository.ts", () => {
   return {
@@ -57,15 +61,42 @@ describe("endpoint GET api/login/google", () => {
     expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
 
-  it("When user not exist in DB should add it and go to edit profile page", async () => {
-    jest.spyOn(UserRepository, "doesUserEmailExist").mockResolvedValue(false);
-    jest.spyOn(UserRepository, "getUserByEmail").mockResolvedValue(userDummy);
-    jest.spyOn(UserRepository, "createUser");
+  it("Should return code 401 when csrf verification failed", async () => {
+    const cookie = CookieUtil.serialize("csrf_state", "csrfstatedummy2");
 
     const { req, res } = createMocks({
       method: "GET",
       query: {
         code: "code",
+        state: "csrfstatedummy",
+      },
+      headers: {
+        cookie: cookie,
+      },
+    });
+
+    // @ts-ignore
+    await handler(req, res);
+
+    const data: CustomResponse<null> = res.json()._getJSONData();
+    expect(res.statusCode).toBe(401);
+    expect(data.error).toBe(SERVICE_ERROR_UNAUTHORIZED);
+  });
+
+  it("When user not exist in DB should add it and go to edit profile page", async () => {
+    jest.spyOn(UserRepository, "doesUserEmailExist").mockResolvedValue(false);
+    jest.spyOn(UserRepository, "getUserByEmail").mockResolvedValue(userDummy);
+    jest.spyOn(UserRepository, "createUser");
+    const cookie = CookieUtil.serialize("csrf_state", "csrfstatedummy");
+
+    const { req, res } = createMocks({
+      method: "GET",
+      query: {
+        code: "code",
+        state: "csrfstatedummy",
+      },
+      headers: {
+        cookie: cookie,
       },
     });
 
@@ -84,11 +115,16 @@ describe("endpoint GET api/login/google", () => {
     jest.spyOn(UserRepository, "doesUserEmailExist").mockResolvedValue(true);
     jest.spyOn(UserRepository, "getUserByEmail").mockResolvedValue(userDummy);
     jest.spyOn(UserRepository, "createUser");
+    const cookie = CookieUtil.serialize("csrf_state", "csrfstatedummy");
 
     const { req, res } = createMocks({
       method: "GET",
       query: {
         code: "code",
+        state: "csrfstatedummy",
+      },
+      headers: {
+        cookie: cookie,
       },
     });
 

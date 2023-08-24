@@ -10,6 +10,12 @@ jest.mock("@/lib/env", () => {
   };
 });
 
+jest.mock("@/lib/crypto", () => {
+  return {
+    generateRandomCode: jest.fn().mockReturnValue("csrfstatedummy"),
+  };
+});
+
 describe("endpoint GET api/login/google", () => {
   beforeEach(() => {});
 
@@ -45,6 +51,7 @@ describe("endpoint GET api/login/google", () => {
       client_id: "GOOGLE_CLIENT_ID",
       scope: "openid email profile",
       redirect_uri: "GOOGLE_REDIRECT_CODE_URL",
+      state: "csrfstatedummy",
     });
   });
 });
