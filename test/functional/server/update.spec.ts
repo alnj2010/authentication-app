@@ -84,7 +84,7 @@ describe("endpoint PUT /update", () => {
     for (const key in userSubmit) {
       body.append(key, userSubmit[key as keyof UserSubmit] as string | Blob);
     }
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -107,7 +107,7 @@ describe("endpoint PUT /update", () => {
       });
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -128,7 +128,7 @@ describe("endpoint PUT /update", () => {
       .mockResolvedValue({ ...userDummy, photo: null, password: "*" });
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -149,7 +149,7 @@ describe("endpoint PUT /update", () => {
       .mockResolvedValue({ ...userDummy, photo: null, phone: "invalidphone" });
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -170,7 +170,7 @@ describe("endpoint PUT /update", () => {
       .mockResolvedValue({ ...userDummy, photo: invalidUserPhotoDummy });
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -193,7 +193,7 @@ describe("endpoint PUT /update", () => {
     jest.spyOn(S3Uploader, "upload").mockRejectedValue(new Error());
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -216,7 +216,7 @@ describe("endpoint PUT /update", () => {
     jest.spyOn(UserRepository, "updateUser").mockRejectedValue(new Error());
 
     const body = new FormData();
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const { req, res } = createMocks({
       method: "PUT",
@@ -236,7 +236,7 @@ describe("endpoint PUT /update", () => {
       .spyOn(FormDataUtil, "getUserAndPhotoByRequest")
       .mockResolvedValue({ ...userDummy, photo: userPhotoDummy });
 
-    const cookie = CookieUtil.serializeAccessToken("tokendummy");
+    const cookie = CookieUtil.serialize("access_token", "tokendummy");
 
     const body = new FormData();
     const { req, res } = createMocks({

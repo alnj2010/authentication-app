@@ -4,14 +4,14 @@ export interface AuthInfo {
 }
 
 interface User extends AuthInfo {
-  id: string;
   bio: string;
   name: string;
   phone: string;
+  photo: string;
 }
 
 export interface UserEntity extends User {
-  photo: string;
+  id: string;
 }
 
 interface UserBasicSubmitInfo {
@@ -32,6 +32,11 @@ export interface UserServer extends UserBasicSubmitInfo {
 export interface UserUpdateable extends UserBasicSubmitInfo {
   id: string;
   photo: string | null;
+}
+
+export interface UserCreateable extends UserBasicSubmitInfo {
+  email: string;
+  photo: string;
 }
 
 export type LoginResponseDTO = any;

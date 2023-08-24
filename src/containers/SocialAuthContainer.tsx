@@ -1,11 +1,10 @@
 import Typography from "@/components/Typography";
-import { SocialProviders } from "@/domain/types";
-import { socialAuthService } from "@/services/social-auth-service";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 type Props = {};
-const authProviders = [
+export const authProviders = [
   { id: "google", imgSrc: "/Google.svg" },
   { id: "facebook", imgSrc: "/Facebook.svg" },
   { id: "twitter", imgSrc: "/Twitter.svg" },
@@ -15,17 +14,6 @@ const authProviders = [
 export default function SocialAuthContainer({}: Props) {
   const router = useRouter();
 
-  const handlerSocialAuthButton = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    const provider = e.currentTarget.id;
-    try {
-      await socialAuthService(provider as SocialProviders);
-      router.push("/profile");
-    } catch (error) {
-      router.push("/500");
-    }
-  };
   return (
     <div>
       <div className="text-center	pb-6">
@@ -36,9 +24,9 @@ export default function SocialAuthContainer({}: Props) {
       <div className=" pb-8">
         <div className="max-w-[224px] m-auto flex justify-between">
           {authProviders.map((item) => (
-            <button
+            <Link
               id={item.id}
-              onClick={handlerSocialAuthButton}
+              href={`/api/login/${item.id}`}
               className="min-w-[42px]"
               key={item.id}
               data-testid={`${item.id}-button`}
@@ -49,7 +37,7 @@ export default function SocialAuthContainer({}: Props) {
                 width={42}
                 height={42}
               />
-            </button>
+            </Link>
           ))}
         </div>
       </div>

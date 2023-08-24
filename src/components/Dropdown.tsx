@@ -49,7 +49,7 @@ export default function Dropdown({ user }: Props) {
           className="w-full flex justify-end items-center pb-6"
           data-testid="menu-button"
         >
-          <div className="hidden w-[32px] h-[32px] bg-black-light rounded-md mr-3 sm:flex sm:justify-center sm:items-center">
+          <div className="hidden min-w-[32px] h-[32px] bg-black-light rounded-md mr-3 sm:flex sm:justify-center sm:items-center">
             <Image
               className="max-h-full w-auto"
               src={user.photo}

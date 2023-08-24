@@ -7,17 +7,17 @@ import { ApiError } from "next/dist/server/api-utils";
 class CookieUtil {
   constructor() {}
 
-  serializeAccessToken(token: string) {
-    return serialize("access_token", token, {
+  serialize(name: string, token: string) {
+    return serialize(name, token, {
       httpOnly: true,
       sameSite: "strict",
       secure: true,
       path: "/",
     });
   }
-  getAccessToken(req: NextApiRequest, res: NextApiResponse): string {
+  get(name: string, req: NextApiRequest, res: NextApiResponse): string {
     const cookies = new Cookies(req, res);
-    const accessToken = cookies.get("access_token");
+    const accessToken = cookies.get(name);
     if (!accessToken) {
       throw new ApiError(401, SERVICE_ERROR_UNAUTHORIZED);
     }
@@ -25,8 +25,8 @@ class CookieUtil {
     return accessToken;
   }
 
-  removeAccessToken(): string {
-    return serialize("access_token", "deleted", {
+  remove(name: string): string {
+    return serialize(name, "deleted", {
       httpOnly: true,
       sameSite: "strict",
       secure: true,

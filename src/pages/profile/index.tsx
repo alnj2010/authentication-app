@@ -23,7 +23,7 @@ export const getServerSideProps = async function ({
   res: NextApiResponse;
 }) {
   try {
-    const token = CookieUtil.getAccessToken(req, res);
+    const token = CookieUtil.get("access_token", req, res);
     const id = TokenUtil.verifyTokenAndGetSub(token);
     const user = await UserRepository.getUserById(id);
 
