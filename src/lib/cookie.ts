@@ -10,7 +10,6 @@ class CookieUtil {
   serialize(name: string, token: string) {
     return serialize(name, token, {
       httpOnly: true,
-      sameSite: "strict",
       secure: true,
       path: "/",
     });
