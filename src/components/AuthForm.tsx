@@ -15,12 +15,14 @@ type Props = {
   authService: AuthService;
   buttonTitle: string;
   buttonId: string;
+  redirectTo: string;
 };
 
 export default function AuthForm({
   authService,
   buttonTitle,
   buttonId,
+  redirectTo,
 }: Props) {
   const [
     fields,
@@ -28,16 +30,20 @@ export default function AuthForm({
     handleSubmit,
     errorMessages,
     isSubmitButtonDisabled,
-  ] = useForm<AuthInfo>(authService, {
-    email: {
-      value: "",
-      validators: [nonEmptyValidator, emailPatternValidator],
+  ] = useForm<AuthInfo>(
+    authService,
+    {
+      email: {
+        value: "",
+        validators: [nonEmptyValidator, emailPatternValidator],
+      },
+      password: {
+        value: "",
+        validators: [nonEmptyValidator, min4CharsValidator],
+      },
     },
-    password: {
-      value: "",
-      validators: [nonEmptyValidator, min4CharsValidator],
-    },
-  });
+    redirectTo
+  );
 
   const areThereErrors = !!errorMessages.length;
   return (

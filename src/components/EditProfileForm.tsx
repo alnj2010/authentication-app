@@ -17,12 +17,14 @@ import { useForm } from "@/hooks/useForm";
 
 type Props = {
   initial: UserEntity;
+  redirectTo: string;
   updateProfileService: (user: UserSubmit) => Promise<void>;
 };
 
 export default function EditProfileForm({
   initial,
   updateProfileService,
+  redirectTo,
 }: Props) {
   const [
     fields,
@@ -30,28 +32,32 @@ export default function EditProfileForm({
     handleSubmit,
     errorMessages,
     isSubmitButtonDisabled,
-  ] = useForm<UserSubmit>(updateProfileService, {
-    photo: {
-      value: initial.photo,
-      validators: [photoNameExtensionValidator, photoSizeValidator],
+  ] = useForm<UserSubmit>(
+    updateProfileService,
+    {
+      photo: {
+        value: initial.photo,
+        validators: [photoNameExtensionValidator, photoSizeValidator],
+      },
+      name: {
+        value: initial.name,
+        validators: [],
+      },
+      bio: {
+        value: initial.bio,
+        validators: [],
+      },
+      phone: {
+        value: initial.phone,
+        validators: [phoneNumberValidator],
+      },
+      password: {
+        value: initial.password,
+        validators: [nonEmptyValidator, min4CharsValidator],
+      },
     },
-    name: {
-      value: initial.name,
-      validators: [],
-    },
-    bio: {
-      value: initial.bio,
-      validators: [],
-    },
-    phone: {
-      value: initial.phone,
-      validators: [phoneNumberValidator],
-    },
-    password: {
-      value: initial.password,
-      validators: [nonEmptyValidator, min4CharsValidator],
-    },
-  });
+    redirectTo
+  );
 
   const areThereErrors = !!errorMessages.length;
 

@@ -40,7 +40,8 @@ function calculateStateSubmitButton<T>(
 
 export function useForm<T>(
   service: (value: any) => Promise<void>,
-  formScheme: ValidationScheme
+  formScheme: ValidationScheme,
+  redirectTo: string
 ): [T, HandleField, HandleSubmit, Array<string>, boolean] {
   const initial = parseSchemmeToFields<T>(formScheme);
 
@@ -60,7 +61,7 @@ export function useForm<T>(
       const submitValue = validateScheme<T>(formScheme);
 
       await service(submitValue);
-      router.push("/profile");
+      router.push(redirectTo);
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorMessages([error.message]);

@@ -65,6 +65,7 @@ export default function EditProfile({ user }: Props) {
             <EditProfileForm
               initial={user}
               updateProfileService={updateUserService}
+              redirectTo="/profile"
             />
           </div>
         </ContentLayout>
