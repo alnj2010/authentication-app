@@ -1,7 +1,8 @@
 import { createMocks } from "node-mocks-http";
-import handler from "@/pages/api/login/facebook";
+import handler from "@/pages/api/login/[provider]";
 import { CustomResponse } from "@/domain/types";
 import { FACEBOOK_AUTH_URL, SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
+
 import QueryStringUtil from "@/lib/query-string";
 
 jest.mock("@/lib/env", () => {
@@ -22,6 +23,9 @@ describe("endpoint GET api/login/facebook", () => {
   it("Should return code 404 when method is diferent to GET", async () => {
     const { req, res } = createMocks({
       method: "POST",
+      query: {
+        provider: "facebook",
+      },
     });
 
     // @ts-ignore
@@ -37,6 +41,9 @@ describe("endpoint GET api/login/facebook", () => {
 
     const { req, res } = createMocks({
       method: "GET",
+      query: {
+        provider: "facebook",
+      },
     });
 
     // @ts-ignore

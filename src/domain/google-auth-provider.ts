@@ -1,10 +1,10 @@
 import QueryStringUtil from "@/lib/query-string";
 import EnvUtil from "@/lib/env";
-import { GOOGLE_TOKEN_URL } from "@/domain/constants";
+import { SocialAuthProvider } from "./social-auth-provider";
+import { GOOGLE_AUTH_URL, GOOGLE_TOKEN_URL } from "./constants";
 
-class GoogleAuthUtil {
+class GoogleAuthProvider implements SocialAuthProvider {
   constructor() {}
-
   async exchangeCodeForToken(code: string): Promise<string> {
     const body = {
       code,
@@ -26,7 +26,20 @@ class GoogleAuthUtil {
 
     return data.id_token;
   }
+
+  generateAuthorizationServerUrl(csrfState: string): string {
+    const scopes = ["openid", "email", "profile"];
+    const query = QueryStringUtil.stringify({
+      response_type: "code",
+      client_id: EnvUtil.get("GOOGLE_CLIENT_ID"),
+      scope: scopes.join(" "),
+      redirect_uri: EnvUtil.get("GOOGLE_REDIRECT_CODE_URL"),
+      state: csrfState,
+    });
+
+    return `${GOOGLE_AUTH_URL}?${query}`;
+  }
 }
 
-const util = new GoogleAuthUtil();
-export default util;
+const auth = new GoogleAuthProvider();
+export default auth;
