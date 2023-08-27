@@ -6,7 +6,11 @@ export async function loginService(user: AuthInfo) {
   return await Api.post("/api/login", null, {
     headers: {
       "Content-Type": "application/json",
-      authorization: HeaderUtil.serializeAuthBasicHeader(user),
+      authorization: HeaderUtil.serializeAuthorizationHeader(
+        "Basic",
+        user.email,
+        user.password
+      ),
     },
   });
 }

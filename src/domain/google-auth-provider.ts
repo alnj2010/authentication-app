@@ -2,10 +2,12 @@ import QueryStringUtil from "@/lib/query-string";
 import EnvUtil from "@/lib/env";
 import { SocialAuthProvider } from "./social-auth-provider";
 import { GOOGLE_AUTH_URL, GOOGLE_TOKEN_URL } from "./constants";
+import TokenUtil from "@/lib/token";
+import { SocialInfo } from "./types";
 
 class GoogleAuthProvider implements SocialAuthProvider {
   constructor() {}
-  async exchangeCodeForToken(code: string): Promise<string> {
+  async getSocialInfoByCode(code: string): Promise<SocialInfo> {
     const body = {
       code,
       client_id: EnvUtil.get("GOOGLE_CLIENT_ID"),
@@ -22,9 +24,13 @@ class GoogleAuthProvider implements SocialAuthProvider {
       body: QueryStringUtil.stringify(body),
     });
 
-    const data = await response.json();
-
-    return data.id_token;
+    const { id_token } = await response.json();
+    const payload = TokenUtil.decode(id_token);
+    return {
+      email: payload.email,
+      picture: payload.picture,
+      name: payload.name,
+    };
   }
 
   generateAuthorizationServerUrl(csrfState: string): string {

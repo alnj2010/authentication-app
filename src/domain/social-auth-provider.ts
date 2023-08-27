@@ -1,4 +1,6 @@
+import { SocialInfo } from "./types";
+
 export interface SocialAuthProvider {
   generateAuthorizationServerUrl(csrfState: string): string;
-  exchangeCodeForToken(code: string): Promise<string>;
+  getSocialInfoByCode(code: string): Promise<SocialInfo>;
 }

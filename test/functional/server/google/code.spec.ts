@@ -36,10 +36,12 @@ describe("endpoint GET api/login/google", () => {
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
-    jest
-      .spyOn(GoogleAuthProvider, "exchangeCodeForToken")
-      .mockResolvedValue("token");
-    (GoogleAuthProvider.exchangeCodeForToken as jest.Mock).mockClear();
+    jest.spyOn(GoogleAuthProvider, "getSocialInfoByCode").mockResolvedValue({
+      picture: userDummy.photo,
+      name: userDummy.name,
+      email: userDummy.email,
+    });
+    (GoogleAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
 
     (TokenUtil.createToken as jest.Mock).mockClear();
     (TokenUtil.decode as jest.Mock).mockClear();
@@ -104,7 +106,7 @@ describe("endpoint GET api/login/google", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(GoogleAuthProvider.exchangeCodeForToken).toBeCalledTimes(1);
+    expect(GoogleAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(1);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile/edit");
@@ -133,7 +135,7 @@ describe("endpoint GET api/login/google", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(GoogleAuthProvider.exchangeCodeForToken).toBeCalledTimes(1);
+    expect(GoogleAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(0);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile");

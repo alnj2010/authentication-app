@@ -63,3 +63,9 @@ export type FileUploadeable = {
   name: string;
   buffer: Buffer;
 };
+
+export type SocialInfo = {
+  name: string;
+  picture: string;
+  email: string;
+};

@@ -2,10 +2,12 @@ import QueryStringUtil from "@/lib/query-string";
 import EnvUtil from "@/lib/env";
 import { SocialAuthProvider } from "./social-auth-provider";
 import { FACEBOOK_AUTH_URL, FACEBOOK_TOKEN_URL } from "./constants";
+import TokenUtil from "@/lib/token";
+import { SocialInfo } from "./types";
 
 class FacebookAuthProvider implements SocialAuthProvider {
   constructor() {}
-  async exchangeCodeForToken(code: string): Promise<string> {
+  async getSocialInfoByCode(code: string): Promise<SocialInfo> {
     const query = QueryStringUtil.stringify({
       code,
       client_id: EnvUtil.get("FACEBOOK_CLIENT_ID"),
@@ -17,9 +19,14 @@ class FacebookAuthProvider implements SocialAuthProvider {
     const response = await fetch(`${FACEBOOK_TOKEN_URL}?${query}`, {
       method: "GET",
     });
-    
-    const data = await response.json();
-    return data.id_token;
+
+    const { id_token } = await response.json();
+    const payload = TokenUtil.decode(id_token);
+    return {
+      email: payload.email,
+      picture: payload.picture,
+      name: payload.name,
+    };
   }
 
   generateAuthorizationServerUrl(csrfState: string): string {

@@ -1,5 +1,4 @@
 import { AuthInfo } from "@/domain/types";
-import { userDummy } from "../../test/dummies";
 import { SERVICE_ERROR_INVALID_REQUEST } from "@/domain/constants";
 import { ApiError } from "next/dist/server/api-utils";
 import {
@@ -36,10 +35,12 @@ class HeaderUtil {
     }
   }
 
-  serializeAuthBasicHeader(credentials: AuthInfo): string {
-    return `Basic ${Base64Util.encode(
-      `${credentials.email}:${credentials.password}`
-    )}`;
+  serializeAuthorizationHeader(
+    type: "Basic" | "Bearer",
+    user: string,
+    password: string
+  ): string {
+    return `${type} ${Base64Util.encode(`${user}:${password}`)}`;
   }
 }
 

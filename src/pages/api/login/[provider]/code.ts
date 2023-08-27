@@ -1,5 +1,4 @@
 import {
-  GOOGLE_AUTH_URL,
   SECRET_PASSWORD,
   SERVICE_ERROR_INTERNAL,
   SERVICE_ERROR_NOT_FOUND,
@@ -42,28 +41,28 @@ export default async function handler(
     const socialAuthProvider: SocialAuthProvider =
       SocialAuthProviderFactory.get(provider as string);
 
-    const idToken = await socialAuthProvider.exchangeCodeForToken(
+    const socialInfo = await socialAuthProvider.getSocialInfoByCode(
       code as string
     );
 
-    const payload = TokenUtil.decode(idToken);
-
-    const userExists = await UserRepository.doesUserEmailExist(payload.email);
+    const userExists = await UserRepository.doesUserEmailExist(
+      socialInfo.email
+    );
 
     let page = "/profile";
     if (!userExists) {
       page = "/profile/edit";
       await UserRepository.createUser({
         bio: "",
-        name: payload.name ?? "",
+        name: socialInfo.name ?? "",
         phone: "",
-        photo: payload.picture ?? "",
-        email: payload.email,
+        photo: socialInfo.picture ?? "",
+        email: socialInfo.email,
         password: SECRET_PASSWORD,
       });
     }
 
-    const user = await UserRepository.getUserByEmail(payload.email);
+    const user = await UserRepository.getUserByEmail(socialInfo.email);
     const token = TokenUtil.createToken(user.id);
 
     const cookie = CookieUtil.serialize("access_token", token);

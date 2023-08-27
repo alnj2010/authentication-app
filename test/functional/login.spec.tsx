@@ -90,7 +90,7 @@ describe("Login page", () => {
       .mockRejectedValue(new ApiError(SERVICE_ERROR_INVALID_CREDENTIALS));
     await submitAuthForm("login", userAuthDummy);
 
-    jest.spyOn(HeaderUtil, "serializeAuthBasicHeader");
+    jest.spyOn(HeaderUtil, "serializeAuthorizationHeader");
     
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);

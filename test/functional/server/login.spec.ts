@@ -90,10 +90,11 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: HeaderUtil.serializeAuthBasicHeader({
-          email: "invalidemail",
-          password: userDummy.password,
-        }),
+        authorization: HeaderUtil.serializeAuthorizationHeader(
+          "Basic",
+          "invalidemail",
+          userDummy.password
+        ),
       },
     });
 
@@ -106,10 +107,11 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: HeaderUtil.serializeAuthBasicHeader({
-          email: userDummy.email,
-          password: "*",
-        }),
+        authorization: HeaderUtil.serializeAuthorizationHeader(
+          "Basic",
+          userDummy.email,
+          "*"
+        ),
       },
     });
 
@@ -124,7 +126,11 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
+        authorization: HeaderUtil.serializeAuthorizationHeader(
+          "Basic",
+          userDummy.email,
+          userDummy.password
+        ),
       },
     });
 
@@ -140,7 +146,11 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
+        authorization: HeaderUtil.serializeAuthorizationHeader(
+          "Basic",
+          userDummy.email,
+          userDummy.password
+        ),
       },
     });
 
@@ -157,7 +167,11 @@ describe("endpoint POST /login", () => {
     const { req, res } = createMocks({
       method: "POST",
       headers: {
-        authorization: HeaderUtil.serializeAuthBasicHeader(userDummy),
+        authorization: HeaderUtil.serializeAuthorizationHeader(
+          "Basic",
+          userDummy.email,
+          userDummy.password
+        ),
       },
     });
 
