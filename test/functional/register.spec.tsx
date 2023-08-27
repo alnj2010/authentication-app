@@ -11,8 +11,8 @@ import { submitAuthForm } from "../shared";
 import { Api } from "@/lib/api";
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
-import { ApiError } from "@/domain/errors/api-error";
 import { REGISTER_SERVICE_ERROR_EXISTING_USER } from "@/domain/constants";
+import { ApiError } from "next/dist/server/api-utils";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
@@ -96,7 +96,9 @@ describe("Register page", () => {
   it("When register form is submited with existing user should show error messages", async () => {
     jest
       .spyOn(Api, "post")
-      .mockRejectedValue(new ApiError(REGISTER_SERVICE_ERROR_EXISTING_USER));
+      .mockRejectedValue(
+        new ApiError(400, REGISTER_SERVICE_ERROR_EXISTING_USER)
+      );
     await submitAuthForm("register", userAuthDummy);
 
     const errorMessages = screen.getByTestId("error-messages");

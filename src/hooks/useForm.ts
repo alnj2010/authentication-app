@@ -4,7 +4,7 @@ import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found
 import { useRouter } from "next/router";
 import { nonEmptyValidator, validateScheme } from "@/lib/validator";
 import { FormValidationError } from "@/domain/errors/form-validation-error";
-import { ApiError } from "@/domain/errors/api-error";
+import { ApiError } from "next/dist/server/api-utils";
 
 type HandleField = (
   e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>

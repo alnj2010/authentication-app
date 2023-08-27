@@ -1,6 +1,6 @@
-import { ApiError } from "@/domain/errors/api-error";
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 import { CustomResponse } from "@/domain/types";
+import { ApiError } from "next/dist/server/api-utils";
 
 export const Api = new (class {
   private async request(url: string, config?: RequestInit): Promise<any> {
@@ -10,7 +10,7 @@ export const Api = new (class {
       if (response.ok) {
         return payload.data;
       } else {
-        throw new ApiError(payload.error);
+        throw new ApiError(response.status, payload.error as string);
       }
     } catch (error) {
       if (error instanceof ApiError) throw error;
