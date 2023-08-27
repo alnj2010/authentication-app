@@ -42,9 +42,8 @@ export interface UserCreateable extends UserBasicSubmitInfo {
 export type LoginResponseDTO = any;
 
 export type CustomResponse<TData> = {
-  code: number;
   error?: string;
-  data: TData;
+  data?: TData;
 };
 
 export type AuthService = (authInfo: AuthInfo) => Promise<void>;
@@ -62,4 +61,10 @@ export type FileUploadeable = {
   mimetype: string;
   name: string;
   buffer: Buffer;
+};
+
+export type SocialInfo = {
+  name: string;
+  picture: string;
+  email: string;
 };

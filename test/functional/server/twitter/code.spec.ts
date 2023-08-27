@@ -7,10 +7,10 @@ import {
 } from "@/domain/constants";
 import UserRepository from "@/repositories/user-repository";
 import TokenUtil from "@/lib/token";
-import GoogleAuthProvider from "@/domain/google-auth-provider";
+import TwitterAuthProvider from "@/domain/twitter-auth-provider";
+
 import { userDummy } from "../../../dummies";
 import CookieUtil from "@/lib/cookie";
-import { Api } from "@/lib/api";
 
 jest.mock("@/repositories/user-repository.ts", () => {
   return {
@@ -23,29 +23,32 @@ jest.mock("@/repositories/user-repository.ts", () => {
 jest.mock("@/lib/token", () => {
   return {
     createToken: jest.fn().mockResolvedValue("token"),
-    decode: jest.fn().mockReturnValue({
-      email: "a@email.com",
-      name: "name",
-      picture: "picture",
-    }),
   };
 });
 
 jest.mock("@/lib/api", () => ({
-  Api: { post: jest.fn().mockResolvedValue({ id_token: "idtoken" }) },
+  Api: {
+    post: jest.fn().mockResolvedValue({ access_token: "idtoken" }),
+    get: jest.fn().mockResolvedValue({
+      data: {
+        username: "username",
+        name: "name",
+        profile_image_url: "picture",
+      },
+    }),
+  },
 }));
 
-describe("endpoint GET api/login/google", () => {
+describe("endpoint GET api/login/twitter", () => {
   beforeEach(() => {
     (UserRepository.createUser as jest.Mock).mockClear();
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
     (TokenUtil.createToken as jest.Mock).mockClear();
-    (TokenUtil.decode as jest.Mock).mockClear();
 
-    jest.spyOn(GoogleAuthProvider, "getSocialInfoByCode");
-    (GoogleAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
+    jest.spyOn(TwitterAuthProvider, "getSocialInfoByCode");
+    (TwitterAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
   });
 
   it("Should return code 404 when method is diferent to GET", async () => {
@@ -69,7 +72,6 @@ describe("endpoint GET api/login/google", () => {
       query: {
         code: "code",
         state: "csrfstatedummy",
-        provider: "google",
       },
       headers: {
         cookie: cookie,
@@ -95,7 +97,7 @@ describe("endpoint GET api/login/google", () => {
       query: {
         code: "code",
         state: "csrfstatedummy",
-        provider: "google",
+        provider: "twitter",
       },
       headers: {
         cookie: cookie,
@@ -107,7 +109,7 @@ describe("endpoint GET api/login/google", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(GoogleAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
+    expect(TwitterAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(1);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile/edit");
@@ -124,7 +126,7 @@ describe("endpoint GET api/login/google", () => {
       query: {
         code: "code",
         state: "csrfstatedummy",
-        provider: "google",
+        provider: "twitter",
       },
       headers: {
         cookie: cookie,
@@ -136,7 +138,7 @@ describe("endpoint GET api/login/google", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(GoogleAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
+    expect(TwitterAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(0);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile");

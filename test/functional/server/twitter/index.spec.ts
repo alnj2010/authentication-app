@@ -1,7 +1,7 @@
 import { createMocks } from "node-mocks-http";
 import handler from "@/pages/api/login/[provider]";
 import { CustomResponse } from "@/domain/types";
-import { FACEBOOK_AUTH_URL, SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
+import { TWITTER_AUTH_URL, SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
 
 import QueryStringUtil from "@/lib/query-string";
 
@@ -17,14 +17,14 @@ jest.mock("@/lib/crypto", () => {
   };
 });
 
-describe("endpoint GET api/login/facebook", () => {
+describe("endpoint GET api/login/twitter", () => {
   beforeEach(() => {});
 
   it("Should return code 404 when method is diferent to GET", async () => {
     const { req, res } = createMocks({
       method: "POST",
       query: {
-        provider: "facebook",
+        provider: "twitter",
       },
     });
 
@@ -36,13 +36,13 @@ describe("endpoint GET api/login/facebook", () => {
     expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
 
-  it("Should redirect to facebook authorization server", async () => {
+  it("Should redirect to twitter authorization server", async () => {
     jest.spyOn(QueryStringUtil, "stringify");
 
     const { req, res } = createMocks({
       method: "GET",
       query: {
-        provider: "facebook",
+        provider: "twitter",
       },
     });
 
@@ -52,12 +52,14 @@ describe("endpoint GET api/login/facebook", () => {
     const redirectUrl = res._getRedirectUrl();
 
     expect(res.statusCode).toBe(302);
-    expect(redirectUrl).toContain(FACEBOOK_AUTH_URL);
+    expect(redirectUrl).toContain(TWITTER_AUTH_URL);
     expect(QueryStringUtil.stringify).toHaveBeenCalledWith({
+      code_challenge: "challenge",
+      code_challenge_method: "plain",
       response_type: "code",
-      client_id: "FACEBOOK_CLIENT_ID",
-      scope: "openid email",
-      redirect_uri: "FACEBOOK_REDIRECT_CODE_URL",
+      client_id: "TWITTER_CLIENT_ID",
+      scope: "users.read tweet.read",
+      redirect_uri: "TWITTER_REDIRECT_CODE_URL",
       state: "csrfstatedummy",
     });
   });

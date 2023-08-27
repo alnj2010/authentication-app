@@ -19,6 +19,12 @@ const nextConfig = {
         hostname: 'platform-lookaside.fbsbx.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com',
+        port: '',
+        pathname: '/**'
       }]
   },
   reactStrictMode: true,

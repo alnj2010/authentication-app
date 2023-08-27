@@ -1,13 +1,16 @@
 import { createMocks } from "node-mocks-http";
 import handler from "@/pages/api/user";
 import { userDummy } from "../../dummies";
-import { UserSubmit } from "@/domain/types";
+import { CustomResponse, UserSubmit } from "@/domain/types";
 import CookieUtil from "@/lib/cookie";
 import TokenUtil from "@/lib/token";
 
 import FormDataUtil from "@/lib/form-data";
 import { ApiError } from "next/dist/server/api-utils";
-import { SERVICE_ERROR_UNAUTHORIZED } from "@/domain/constants";
+import {
+  SERVICE_ERROR_NOT_FOUND,
+  SERVICE_ERROR_UNAUTHORIZED,
+} from "@/domain/constants";
 import S3Uploader from "@/lib/uploader";
 import UserRepository from "@/repositories/user-repository";
 
@@ -62,6 +65,19 @@ describe("endpoint PUT /update", () => {
     (S3Uploader.upload as jest.Mock).mockReset();
 
     (UserRepository.updateUser as jest.Mock).mockReset();
+  });
+
+  it("Should return code 404 when method is diferent to PUT", async () => {
+    const { req, res } = createMocks({
+      method: "GET",
+    });
+
+    // @ts-ignore
+    await handler(req, res);
+
+    const data: CustomResponse<undefined> = res._getJSONData();
+    expect(res.statusCode).toBe(404);
+    expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
 
   it("Should return code 401 when access_token cookie not found", async () => {

@@ -11,8 +11,8 @@ import { submitAuthForm } from "../shared";
 import { Api } from "@/lib/api";
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
-import { ApiError } from "@/domain/errors/api-error";
 import { REGISTER_SERVICE_ERROR_EXISTING_USER } from "@/domain/constants";
+import { ApiError } from "next/dist/server/api-utils";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
@@ -89,14 +89,21 @@ describe("Register page", () => {
 
     await submitAuthForm("register", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
     expect(mockRouter.asPath).toEqual("/profile/edit");
   });
 
   it("When register form is submited with existing user should show error messages", async () => {
     jest
       .spyOn(Api, "post")
-      .mockRejectedValue(new ApiError(REGISTER_SERVICE_ERROR_EXISTING_USER));
+      .mockRejectedValue(
+        new ApiError(400, REGISTER_SERVICE_ERROR_EXISTING_USER)
+      );
     await submitAuthForm("register", userAuthDummy);
 
     const errorMessages = screen.getByTestId("error-messages");
@@ -104,7 +111,12 @@ describe("Register page", () => {
     expect(errorMessages.firstChild?.textContent).toContain(
       REGISTER_SERVICE_ERROR_EXISTING_USER
     );
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
   });
 
   it("When register form is submited with valid data but a error service occurred should go to error page", async () => {
@@ -114,7 +126,12 @@ describe("Register page", () => {
 
     await submitAuthForm("register", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
     expect(mockRouter.asPath).toEqual("/500");
   });
 });

@@ -1,5 +1,5 @@
 import { Api } from "@/lib/api";
 
-export async function logoutService() {
-  return await Api.post("/api/logout", null);
+export async function logoutService(): Promise<void> {
+  return Api.post("/api/logout");
 }

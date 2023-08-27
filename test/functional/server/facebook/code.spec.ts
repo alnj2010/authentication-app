@@ -1,5 +1,5 @@
 import { createMocks } from "node-mocks-http";
-import handler from "@/pages/api/login/facebook/code";
+import handler from "@/pages/api/login/[provider]/code";
 import { CustomResponse } from "@/domain/types";
 import {
   SERVICE_ERROR_NOT_FOUND,
@@ -7,7 +7,8 @@ import {
 } from "@/domain/constants";
 import UserRepository from "@/repositories/user-repository";
 import TokenUtil from "@/lib/token";
-import FacebookAuthUtil from "@/lib/facebook-auth";
+import FacebookAuthProvider from "@/domain/facebook-auth-provider";
+
 import { userDummy } from "../../../dummies";
 import CookieUtil from "@/lib/cookie";
 
@@ -16,12 +17,6 @@ jest.mock("@/repositories/user-repository.ts", () => {
     createUser: jest.fn(),
     doesUserEmailExist: jest.fn().mockResolvedValue(true),
     getUserByEmail: jest.fn(),
-  };
-});
-
-jest.mock("@/lib/facebook-auth", () => {
-  return {
-    exchangeCodeForToken: jest.fn().mockResolvedValue("token"),
   };
 });
 
@@ -36,16 +31,21 @@ jest.mock("@/lib/token", () => {
   };
 });
 
+jest.mock("@/lib/api", () => ({
+  Api: { get: jest.fn().mockResolvedValue({ id_token: "idtoken" }) },
+}));
+
 describe("endpoint GET api/login/facebook", () => {
   beforeEach(() => {
     (UserRepository.createUser as jest.Mock).mockClear();
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
-    (FacebookAuthUtil.exchangeCodeForToken as jest.Mock).mockClear();
-
     (TokenUtil.createToken as jest.Mock).mockClear();
     (TokenUtil.decode as jest.Mock).mockClear();
+
+    jest.spyOn(FacebookAuthProvider, "getSocialInfoByCode");
+    (FacebookAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
   });
 
   it("Should return code 404 when method is diferent to GET", async () => {
@@ -56,7 +56,7 @@ describe("endpoint GET api/login/facebook", () => {
     // @ts-ignore
     await handler(req, res);
 
-    const data: CustomResponse<null> = res.json()._getJSONData();
+    const data: CustomResponse<undefined> = res._getJSONData();
     expect(res.statusCode).toBe(404);
     expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
@@ -78,7 +78,7 @@ describe("endpoint GET api/login/facebook", () => {
     // @ts-ignore
     await handler(req, res);
 
-    const data: CustomResponse<null> = res.json()._getJSONData();
+    const data: CustomResponse<undefined> = res._getJSONData();
     expect(res.statusCode).toBe(401);
     expect(data.error).toBe(SERVICE_ERROR_UNAUTHORIZED);
   });
@@ -94,6 +94,7 @@ describe("endpoint GET api/login/facebook", () => {
       query: {
         code: "code",
         state: "csrfstatedummy",
+        provider: "facebook",
       },
       headers: {
         cookie: cookie,
@@ -105,7 +106,7 @@ describe("endpoint GET api/login/facebook", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(FacebookAuthUtil.exchangeCodeForToken).toBeCalledTimes(1);
+    expect(FacebookAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(1);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile/edit");
@@ -122,6 +123,7 @@ describe("endpoint GET api/login/facebook", () => {
       query: {
         code: "code",
         state: "csrfstatedummy",
+        provider: "facebook",
       },
       headers: {
         cookie: cookie,
@@ -133,7 +135,7 @@ describe("endpoint GET api/login/facebook", () => {
 
     const redirectUrl = res._getRedirectUrl();
 
-    expect(FacebookAuthUtil.exchangeCodeForToken).toBeCalledTimes(1);
+    expect(FacebookAuthProvider.getSocialInfoByCode).toBeCalledTimes(1);
     expect(UserRepository.createUser).toBeCalledTimes(0);
     expect(res.statusCode).toBe(302);
     expect(redirectUrl).toBe("/profile");

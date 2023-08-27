@@ -13,7 +13,7 @@ import { submitAuthForm } from "../shared";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
 import HeaderUtil from "@/lib/header";
 import { SERVICE_ERROR_INVALID_CREDENTIALS } from "@/domain/constants";
-import { ApiError } from "@/domain/errors/api-error";
+import { ApiError } from "next/dist/server/api-utils";
 
 jest.mock("@/lib/api");
 
@@ -87,18 +87,18 @@ describe("Login page", () => {
   it("When login form is submited with correct data but invalid credentials should show error messages", async () => {
     jest
       .spyOn(Api, "post")
-      .mockRejectedValue(new ApiError(SERVICE_ERROR_INVALID_CREDENTIALS));
+      .mockRejectedValue(new ApiError(400, SERVICE_ERROR_INVALID_CREDENTIALS));
     await submitAuthForm("login", userAuthDummy);
 
-    jest.spyOn(HeaderUtil, "serializeAuthBasicHeader");
-    
+    jest.spyOn(HeaderUtil, "serializeAuthorizationHeader");
+
     const errorMessages = screen.getByTestId("error-messages");
     expect(errorMessages.childElementCount).toBe(1);
     expect(errorMessages.firstChild?.textContent).toContain(
       SERVICE_ERROR_INVALID_CREDENTIALS
     );
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
   });
 
@@ -108,7 +108,7 @@ describe("Login page", () => {
     await submitAuthForm("login", userAuthDummy);
 
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/profile");
   });
@@ -121,7 +121,7 @@ describe("Login page", () => {
     await submitAuthForm("login", userAuthDummy);
 
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/500");
   });
