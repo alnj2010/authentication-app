@@ -18,7 +18,7 @@ import { ApiError } from "next/dist/server/api-utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CustomResponse<any>>
+  res: NextApiResponse<CustomResponse<undefined | string>>
 ) {
   if (req.method === "POST") {
     const { email, password } = req.body;
@@ -40,9 +40,7 @@ export default async function handler(
       const userExists = await UserRepository.doesUserEmailExist(email);
       if (userExists) {
         res.status(400).json({
-          code: 400,
           error: REGISTER_SERVICE_ERROR_EXISTING_USER,
-          data: null,
         });
       } else {
         await UserRepository.createUserByCredentials({ email, password });
@@ -54,26 +52,20 @@ export default async function handler(
         const cookie = CookieUtil.serialize("access_token", token);
 
         res.setHeader("Set-Cookie", cookie);
-        res.status(200).json({ code: 200, data: "Successfully Registration" });
+        res.status(200).json({ data: "Successfully Registration" });
       }
     } catch (error) {
       if (error instanceof FormValidationError)
         res.status(400).json({
-          code: 400,
           error: error.errorMsgs.join(" "),
-          data: null,
         });
       else if (error instanceof ApiError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
           error: error.message,
-          data: null,
         });
       } else
         res.status(500).json({
-          code: 500,
           error: SERVICE_ERROR_INTERNAL,
-          data: null,
         });
     }
   }

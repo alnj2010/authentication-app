@@ -16,13 +16,11 @@ import UserRepository from "@/repositories/user-repository";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CustomResponse<any>>
+  res: NextApiResponse<CustomResponse<undefined>>
 ) {
   if (req.method !== "GET") {
     res.status(404).json({
-      code: 404,
       error: SERVICE_ERROR_NOT_FOUND,
-      data: null,
     });
     return;
   }
@@ -31,9 +29,7 @@ export default async function handler(
   const csrfState = CookieUtil.get("csrf_state", req, res);
   if (state !== csrfState) {
     res.status(401).json({
-      code: 401,
       error: SERVICE_ERROR_UNAUTHORIZED,
-      data: null,
     });
     return;
   }
@@ -72,15 +68,11 @@ export default async function handler(
   } catch (error) {
     if (error instanceof ApiError) {
       res.status(404).json({
-        code: error.statusCode,
         error: error.message,
-        data: null,
       });
     } else {
       res.status(500).json({
-        code: 500,
         error: SERVICE_ERROR_INTERNAL,
-        data: null,
       });
     }
   }

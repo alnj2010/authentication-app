@@ -31,7 +31,7 @@ export const config = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CustomResponse<any>>
+  res: NextApiResponse<CustomResponse<string | undefined>>
 ) {
   if (req.method === "PUT") {
     try {
@@ -73,25 +73,19 @@ export default async function handler(
 
       await UserRepository.updateUser(userUpdateable);
 
-      res.status(200).json({ code: 200, data: "Successfully update" });
+      res.status(200).json({ data: "Successfully update" });
     } catch (error) {
       if (error instanceof FormValidationError)
         res.status(400).json({
-          code: 400,
           error: error.errorMsgs.join(" "),
-          data: null,
         });
       else if (error instanceof ApiError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
           error: error.message,
-          data: null,
         });
       } else
         res.status(500).json({
-          code: 500,
           error: SERVICE_ERROR_INTERNAL,
-          data: null,
         });
     }
   }

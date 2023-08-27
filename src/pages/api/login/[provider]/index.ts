@@ -12,13 +12,11 @@ import { ApiError } from "next/dist/server/api-utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CustomResponse<any>>
+  res: NextApiResponse<CustomResponse<undefined>>
 ) {
   if (req.method !== "GET") {
     res.status(404).json({
-      code: 404,
       error: SERVICE_ERROR_NOT_FOUND,
-      data: null,
     });
     return;
   }
@@ -29,7 +27,8 @@ export default async function handler(
       SocialAuthProviderFactory.get(provider as string);
 
     const csrfState = CryptoUtil.generateRandomCode();
-    const authUrl = socialAuthProvider.generateAuthorizationServerUrl(csrfState);
+    const authUrl =
+      socialAuthProvider.generateAuthorizationServerUrl(csrfState);
 
     const cookie = CookieUtil.serialize("csrf_state", csrfState);
     res.setHeader("Set-Cookie", cookie);
@@ -38,15 +37,11 @@ export default async function handler(
   } catch (error) {
     if (error instanceof ApiError) {
       res.status(error.statusCode).json({
-        code: error.statusCode,
         error: error.message,
-        data: null,
       });
     } else {
       res.status(500).json({
-        code: 500,
         error: SERVICE_ERROR_INTERNAL,
-        data: null,
       });
     }
   }

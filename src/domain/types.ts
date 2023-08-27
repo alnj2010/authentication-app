@@ -42,9 +42,8 @@ export interface UserCreateable extends UserBasicSubmitInfo {
 export type LoginResponseDTO = any;
 
 export type CustomResponse<TData> = {
-  code: number;
   error?: string;
-  data: TData;
+  data?: TData;
 };
 
 export type AuthService = (authInfo: AuthInfo) => Promise<void>;
