@@ -3,7 +3,11 @@ import handler from "@/pages/api/register";
 import { userDummy } from "../../dummies";
 import UserRepository from "@/repositories/user-repository";
 import { invalidFieldMsg, lessThan4CharsFieldMsg } from "@/lib/validator";
-import { REGISTER_SERVICE_ERROR_EXISTING_USER } from "@/domain/constants";
+import {
+  REGISTER_SERVICE_ERROR_EXISTING_USER,
+  SERVICE_ERROR_NOT_FOUND,
+} from "@/domain/constants";
+import { CustomResponse } from "@/domain/types";
 
 jest.mock("@/repositories/user-repository.ts", () => {
   return {
@@ -20,6 +24,19 @@ describe("endpoint POST /register", () => {
     (UserRepository.doesUserEmailExist as jest.Mock).mockReset();
     (UserRepository.createUserByCredentials as jest.Mock).mockReset();
     (UserRepository.getUserById as jest.Mock).mockReset();
+  });
+
+  it("Should return code 404 when method is diferent to POST", async () => {
+    const { req, res } = createMocks({
+      method: "GET",
+    });
+
+    // @ts-ignore
+    await handler(req, res);
+
+    const data: CustomResponse<undefined> = res._getJSONData();
+    expect(res.statusCode).toBe(404);
+    expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
 
   it("Should return code 400 when invalid email or password is submitted", async () => {

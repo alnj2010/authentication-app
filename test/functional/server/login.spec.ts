@@ -6,6 +6,8 @@ import Base64Util from "@/lib/base64";
 import HeaderUtil from "@/lib/header";
 import CryptoUtil from "@/lib/crypto";
 import TokenUtil from "@/lib/token";
+import { CustomResponse } from "@/domain/types";
+import { SERVICE_ERROR_NOT_FOUND } from "@/domain/constants";
 
 jest.mock("@/repositories/user-repository.ts", () => {
   return {
@@ -40,6 +42,19 @@ describe("endpoint POST /login", () => {
 
     (TokenUtil.createToken as jest.Mock).mockReset();
     (TokenUtil.verifyTokenAndGetSub as jest.Mock).mockReset();
+  });
+
+  it("Should return code 404 when method is diferent to POST", async () => {
+    const { req, res } = createMocks({
+      method: "GET",
+    });
+
+    // @ts-ignore
+    await handler(req, res);
+
+    const data: CustomResponse<undefined> = res._getJSONData();
+    expect(res.statusCode).toBe(404);
+    expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
 
   it("Should return code 400 when the Authorization item is not in the header", async () => {

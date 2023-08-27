@@ -55,7 +55,7 @@ describe("endpoint GET api/login/google", () => {
     // @ts-ignore
     await handler(req, res);
 
-    const data: CustomResponse<null> = res.json()._getJSONData();
+    const data: CustomResponse<undefined> = res._getJSONData();
     expect(res.statusCode).toBe(404);
     expect(data.error).toBe(SERVICE_ERROR_NOT_FOUND);
   });
@@ -78,7 +78,7 @@ describe("endpoint GET api/login/google", () => {
     // @ts-ignore
     await handler(req, res);
 
-    const data: CustomResponse<null> = res.json()._getJSONData();
+    const data: CustomResponse<undefined> = res._getJSONData();
     expect(res.statusCode).toBe(401);
     expect(data.error).toBe(SERVICE_ERROR_UNAUTHORIZED);
   });
