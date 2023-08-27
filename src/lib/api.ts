@@ -1,14 +1,13 @@
 import { InternalONotFoundApiError } from "@/domain/errors/internal-or-not-found-api-error";
-import { CustomResponse } from "@/domain/types";
 import { ApiError } from "next/dist/server/api-utils";
 
 export const Api = new (class {
   private async request(url: string, config?: RequestInit): Promise<any> {
     const response: Response = await fetch(url, config);
     try {
-      const payload: CustomResponse<any> = await response.json();
+      const payload = await response.json();
       if (response.ok) {
-        return payload.data;
+        return payload;
       } else {
         throw new ApiError(response.status, payload.error as string);
       }
