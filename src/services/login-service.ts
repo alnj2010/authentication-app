@@ -3,7 +3,7 @@ import { Api } from "@/lib/api";
 import HeaderUtil from "@/lib/header";
 
 export async function loginService(user: AuthInfo): Promise<void> {
-  return Api.post("/api/login", null, {
+  return Api.post("/api/login", {
     headers: {
       "Content-Type": "application/json",
       authorization: HeaderUtil.serializeAuthorizationHeader(

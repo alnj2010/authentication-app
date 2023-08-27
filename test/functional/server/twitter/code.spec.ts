@@ -23,13 +23,21 @@ jest.mock("@/repositories/user-repository.ts", () => {
 jest.mock("@/lib/token", () => {
   return {
     createToken: jest.fn().mockResolvedValue("token"),
-    decode: jest.fn().mockReturnValue({
-      email: "a@email.com",
-      name: "name",
-      picture: "picture",
-    }),
   };
 });
+
+jest.mock("@/lib/api", () => ({
+  Api: {
+    post: jest.fn().mockResolvedValue({ access_token: "idtoken" }),
+    get: jest.fn().mockResolvedValue({
+      data: {
+        username: "username",
+        name: "name",
+        profile_image_url: "picture",
+      },
+    }),
+  },
+}));
 
 describe("endpoint GET api/login/twitter", () => {
   beforeEach(() => {
@@ -37,17 +45,10 @@ describe("endpoint GET api/login/twitter", () => {
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
-    jest
-      .spyOn(TwitterAuthProvider, "getSocialInfoByCode")
-      .mockResolvedValue({
-        picture: userDummy.photo,
-        name: userDummy.name,
-        email: userDummy.email,
-      });
-    (TwitterAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
-
     (TokenUtil.createToken as jest.Mock).mockClear();
-    (TokenUtil.decode as jest.Mock).mockClear();
+
+    jest.spyOn(TwitterAuthProvider, "getSocialInfoByCode");
+    (TwitterAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
   });
 
   it("Should return code 404 when method is diferent to GET", async () => {

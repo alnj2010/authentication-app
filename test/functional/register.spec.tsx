@@ -89,7 +89,12 @@ describe("Register page", () => {
 
     await submitAuthForm("register", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
     expect(mockRouter.asPath).toEqual("/profile/edit");
   });
 
@@ -106,7 +111,12 @@ describe("Register page", () => {
     expect(errorMessages.firstChild?.textContent).toContain(
       REGISTER_SERVICE_ERROR_EXISTING_USER
     );
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
   });
 
   it("When register form is submited with valid data but a error service occurred should go to error page", async () => {
@@ -116,7 +126,12 @@ describe("Register page", () => {
 
     await submitAuthForm("register", userAuthDummy);
 
-    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual(userAuthDummy);
+    expect((Api.post as jest.Mock).mock.lastCall[1]).toEqual({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userAuthDummy),
+    });
     expect(mockRouter.asPath).toEqual("/500");
   });
 });

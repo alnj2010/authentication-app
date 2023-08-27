@@ -23,12 +23,10 @@ export const Api = new (class {
 
   async post(
     url: string,
-    body: Object | null,
     config: RequestInit = {}
   ): Promise<any> {
     return this.request(url, {
       method: "POST",
-      body: body ? JSON.stringify(body) : undefined,
       ...config,
     });
   }

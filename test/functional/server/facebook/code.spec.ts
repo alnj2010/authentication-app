@@ -31,23 +31,21 @@ jest.mock("@/lib/token", () => {
   };
 });
 
+jest.mock("@/lib/api", () => ({
+  Api: { get: jest.fn().mockResolvedValue({ id_token: "idtoken" }) },
+}));
+
 describe("endpoint GET api/login/facebook", () => {
   beforeEach(() => {
     (UserRepository.createUser as jest.Mock).mockClear();
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
-    jest
-      .spyOn(FacebookAuthProvider, "getSocialInfoByCode")
-      .mockResolvedValue({
-        picture: userDummy.photo,
-        name: userDummy.name,
-        email: userDummy.email,
-      });
-    (FacebookAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
-
     (TokenUtil.createToken as jest.Mock).mockClear();
     (TokenUtil.decode as jest.Mock).mockClear();
+
+    jest.spyOn(FacebookAuthProvider, "getSocialInfoByCode");
+    (FacebookAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
   });
 
   it("Should return code 404 when method is diferent to GET", async () => {

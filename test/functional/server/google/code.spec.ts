@@ -10,6 +10,7 @@ import TokenUtil from "@/lib/token";
 import GoogleAuthProvider from "@/domain/google-auth-provider";
 import { userDummy } from "../../../dummies";
 import CookieUtil from "@/lib/cookie";
+import { Api } from "@/lib/api";
 
 jest.mock("@/repositories/user-repository.ts", () => {
   return {
@@ -30,21 +31,21 @@ jest.mock("@/lib/token", () => {
   };
 });
 
+jest.mock("@/lib/api", () => ({
+  Api: { post: jest.fn().mockResolvedValue({ id_token: "idtoken" }) },
+}));
+
 describe("endpoint GET api/login/google", () => {
   beforeEach(() => {
     (UserRepository.createUser as jest.Mock).mockClear();
     (UserRepository.doesUserEmailExist as jest.Mock).mockClear();
     (UserRepository.getUserByEmail as jest.Mock).mockClear();
 
-    jest.spyOn(GoogleAuthProvider, "getSocialInfoByCode").mockResolvedValue({
-      picture: userDummy.photo,
-      name: userDummy.name,
-      email: userDummy.email,
-    });
-    (GoogleAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
-
     (TokenUtil.createToken as jest.Mock).mockClear();
     (TokenUtil.decode as jest.Mock).mockClear();
+
+    jest.spyOn(GoogleAuthProvider, "getSocialInfoByCode");
+    (GoogleAuthProvider.getSocialInfoByCode as jest.Mock).mockClear();
   });
 
   it("Should return code 404 when method is diferent to GET", async () => {

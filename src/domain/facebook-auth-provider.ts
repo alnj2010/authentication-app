@@ -4,6 +4,7 @@ import { SocialAuthProvider } from "./social-auth-provider";
 import { FACEBOOK_AUTH_URL, FACEBOOK_TOKEN_URL } from "./constants";
 import TokenUtil from "@/lib/token";
 import { SocialInfo } from "./types";
+import { Api } from "@/lib/api";
 
 class FacebookAuthProvider implements SocialAuthProvider {
   constructor() {}
@@ -16,11 +17,8 @@ class FacebookAuthProvider implements SocialAuthProvider {
       redirect_uri: EnvUtil.get("FACEBOOK_REDIRECT_CODE_URL"),
     });
 
-    const response = await fetch(`${FACEBOOK_TOKEN_URL}?${query}`, {
-      method: "GET",
-    });
+    const { id_token } = await Api.get(`${FACEBOOK_TOKEN_URL}?${query}`);
 
-    const { id_token } = await response.json();
     const payload = TokenUtil.decode(id_token);
     return {
       email: payload.email,

@@ -98,7 +98,7 @@ describe("Login page", () => {
       SERVICE_ERROR_INVALID_CREDENTIALS
     );
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
   });
 
@@ -108,7 +108,7 @@ describe("Login page", () => {
     await submitAuthForm("login", userAuthDummy);
 
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/profile");
   });
@@ -121,7 +121,7 @@ describe("Login page", () => {
     await submitAuthForm("login", userAuthDummy);
 
     expect(
-      (Api.post as jest.Mock).mock.lastCall[2].headers.authorization
+      (Api.post as jest.Mock).mock.lastCall[1].headers.authorization
     ).toContain("Basic");
     expect(mockRouter.asPath).toEqual("/500");
   });

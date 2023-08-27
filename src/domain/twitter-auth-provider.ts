@@ -8,6 +8,7 @@ import {
 } from "./constants";
 import HeaderUtil from "@/lib/header";
 import { SocialInfo } from "./types";
+import { Api } from "@/lib/api";
 
 class TwitterAuthProvider implements SocialAuthProvider {
   constructor() {}
@@ -31,8 +32,7 @@ class TwitterAuthProvider implements SocialAuthProvider {
       redirect_uri: EnvUtil.get("TWITTER_REDIRECT_CODE_URL"),
     };
 
-    const response = await fetch(TWITTER_TOKEN_URL, {
-      method: "POST",
+    const { access_token } = await Api.post(TWITTER_TOKEN_URL, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: HeaderUtil.serializeAuthorizationHeader(
@@ -44,7 +44,6 @@ class TwitterAuthProvider implements SocialAuthProvider {
       body: QueryStringUtil.stringify(body),
     });
 
-    const { access_token } = await response.json();
     return access_token;
   }
 
@@ -54,14 +53,12 @@ class TwitterAuthProvider implements SocialAuthProvider {
     const query = QueryStringUtil.stringify({
       "user.fields": "profile_image_url",
     });
-    const responseMe = await fetch(`${TWITTER_ME_URL}?${query}`, {
-      method: "GET",
+    const { data } = await Api.get(`${TWITTER_ME_URL}?${query}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const { data } = await responseMe.json();
     return data;
   }
 
